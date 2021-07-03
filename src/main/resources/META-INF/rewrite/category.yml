@@ -15,14 +15,14 @@
 #
 ---
 type: specs.openrewrite.org/v1beta/category
-name: JUnit Jupiter
+name: AWS
 packageName: org.openrewrite.terraform.aws
 tags:
   - terraform
   - AWS
 ---
 type: specs.openrewrite.org/v1beta/category
-name: JUnit Jupiter
+name: GCP
 packageName: org.openrewrite.terraform.gcp
 tags:
   - terraform
