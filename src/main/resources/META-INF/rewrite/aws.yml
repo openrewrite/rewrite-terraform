@@ -1,0 +1,63 @@
+#
+# Copyright 2021 the original author or authors.
+# <p>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# <p>
+# https://www.apache.org/licenses/LICENSE-2.0
+# <p>
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.AWSBestPractices
+displayName: Best practices for AWS
+description: Securely operate on Amazon Web Services.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.aws.EncryptEBSVolumes
+  - org.openrewrite.terraform.aws.EncryptRDSClusters
+  - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptEBSVolumes
+displayName: Encrypt EBS volumes
+description: Encrypting EBS volumes ensures that replicated copies of your images are secure even if they are accidentally exposed. AWS EBS encryption uses AWS KMS customer master keys (CMK) when creating encrypted volumes and snapshots. Storing EBS volumes in their encrypted state reduces the risk of data exposure or data loss.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ebs_volume
+      attribute: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptRDSClusters
+displayName: Encrypt RDS clusters
+description: Native RDS encryption helps protect your cloud applications and fulfils compliance requirements for data-at-rest encryption.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      attribute: 'storage_encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
+displayName: Use HTTPS for Cloudfront distribution
+description: Secure communication by default.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_cloudfront_distribution
+      attribute: 'viewer_protocol_policy = "https-only"'
