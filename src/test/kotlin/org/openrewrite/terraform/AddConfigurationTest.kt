@@ -50,4 +50,29 @@ class AddConfigurationTest: HclRecipeTest {
             }
         """.trimIndent()
     )
+
+    @Test
+    fun addPointInTimeRecoveryBlock() = assertChanged(
+        recipe = AddConfiguration(
+            "aws_dynamodb_table",
+            """
+              point_in_time_recovery {
+                enabled = true
+              }
+            """.trimIndent()
+        ),
+        before = """
+            resource "aws_dynamodb_table" {
+              name = "GameScores"
+            }
+        """.trimIndent(),
+        after = """
+            resource "aws_dynamodb_table" {
+              name = "GameScores"
+              point_in_time_recovery {
+                enabled = true
+              }
+            }
+        """.trimIndent()
+    )
 }

@@ -35,10 +35,10 @@ public class AddConfiguration extends Recipe {
             example = "aws_ebs_volume")
     String resourceName;
 
-    @Option(displayName = "Attribute",
-            description = "A Terraform attribute to insert if an attribute with the same name is not found.",
+    @Option(displayName = "Body content",
+            description = "Terraform to insert if an attribute with the same name or block with the same 'type' is not found.",
             example = "encrypted = true")
-    String attribute;
+    String content;
 
     @Override
     public String getDisplayName() {
@@ -51,12 +51,6 @@ public class AddConfiguration extends Recipe {
     }
 
     @Override
-    public Validated validate() {
-        return super.validate().and(Validated.test("attribute", "The configuration must be an attribute.",
-                attribute, a -> HclParser.builder().build().parse(attribute).get(0).getBody().get(0) instanceof Hcl.Attribute));
-    }
-
-    @Override
     protected HclVisitor<ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
@@ -64,17 +58,31 @@ public class AddConfiguration extends Recipe {
                 Hcl.Block b = block;
 
                 if (TerraformResource.isResource(b, resourceName)) {
-                    b = b.withTemplate(HclTemplate.builder(getCursor()::getParent, attribute).build(),
+                    b = b.withTemplate(HclTemplate.builder(getCursor()::getParent, content).build(),
                             b.getCoordinates().last());
 
                     List<BodyContent> body = b.getBody();
-                    Hcl.Attribute added = (Hcl.Attribute) body.get(body.size() - 1);
+                    BodyContent parsedContent = body.get(body.size() - 1);
+
+                    String contentName;
+                    if (parsedContent instanceof Hcl.Attribute) {
+                        contentName = ((Hcl.Attribute) parsedContent).getSimpleName();
+                    } else {
+                        Hcl.Identifier type = ((Hcl.Block) parsedContent).getType();
+                        assert type != null;
+                        contentName = type.getName();
+                    }
 
                     for (int i = 0; i < body.size() - 1; i++) {
                         BodyContent content = body.get(i);
-                        if (content instanceof Hcl.Attribute && ((Hcl.Attribute) content).getSimpleName().equals(added.getSimpleName())) {
+                        if (content instanceof Hcl.Attribute && ((Hcl.Attribute) content).getSimpleName().equals(contentName)) {
                             // discard the in-progress change and return
                             return block;
+                        } else if(content instanceof Hcl.Block) {
+                            Hcl.Block siblingBlock = (Hcl.Block) content;
+                            if(siblingBlock.getType() != null && siblingBlock.getType().getName().equals(contentName)) {
+                                return block;
+                            }
                         }
                     }
                 }

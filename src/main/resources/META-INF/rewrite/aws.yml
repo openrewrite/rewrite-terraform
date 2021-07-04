@@ -22,7 +22,10 @@ tags:
   - terraform
   - AWS
 recipeList:
+  - org.openrewrite.terraform.aws.EnableDynamoDbPITR
   - org.openrewrite.terraform.aws.EncryptEBSVolumes
+  - org.openrewrite.terraform.aws.EncryptEBSSnapshots
+  - org.openrewrite.terraform.aws.EnableECRScanOnPush
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
 ---
@@ -36,6 +39,18 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
+      attribute: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
+displayName: Encrypt EBS snapshots
+description: EBS snapshots should be encrypted, as they often include sensitive information, customer PII or CPNI.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ebs_snapshot
       attribute: 'encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -61,3 +76,33 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_cloudfront_distribution
       attribute: 'viewer_protocol_policy = "https-only"'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableDynamoDbPITR
+displayName: Scan images pushed to ECR
+description: DynamoDB Point-In-Time Recovery (PITR) is an automatic backup service for DynamoDB table data that helps protect your DynamoDB tables from accidental write or delete operations.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_dynamodb_table
+      attribute: |-
+        point_in_time_recovery {
+          enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableECRScanOnPush
+displayName: Enable point-in-time recovery for DynamoDB
+description: ECR Image Scanning assesses and identifies operating system vulnerabilities. Using automated image scans you can ensure container image vulnerabilities are found before getting pushed to production.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ecr_repository
+      attribute: |-
+        image_scanning_configuration {
+          scan_on_push = true
+        }
