@@ -39,7 +39,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
-      attribute: 'encrypted = true'
+      content: 'encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
@@ -51,7 +51,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_snapshot
-      attribute: 'encrypted = true'
+      content: 'encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
@@ -63,7 +63,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
-      attribute: 'storage_encrypted = true'
+      content: 'storage_encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
@@ -75,7 +75,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_cloudfront_distribution
-      attribute: 'viewer_protocol_policy = "https-only"'
+      content: 'viewer_protocol_policy = "https-only"'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnableDynamoDbPITR
@@ -87,7 +87,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_dynamodb_table
-      attribute: |-
+      content: |-
         point_in_time_recovery {
           enabled = true
         }
@@ -102,7 +102,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ecr_repository
-      attribute: |-
+      content: |-
         image_scanning_configuration {
           scan_on_push = true
         }
