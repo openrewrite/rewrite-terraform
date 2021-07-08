@@ -22,11 +22,23 @@ tags:
   - terraform
   - AWS
 recipeList:
+  - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
+  - org.openrewrite.terraform.aws.EnableApiGatewayCaching
+  - org.openrewrite.terraform.aws.EncryptAuroraClusters
+  - org.openrewrite.terraform.aws.EncryptCodeBuild
+  - org.openrewrite.terraform.aws.EncryptDAXStorage
+  - org.openrewrite.terraform.aws.EncryptDocumentDB
   - org.openrewrite.terraform.aws.EnableDynamoDbPITR
+  - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
   - org.openrewrite.terraform.aws.EncryptEBSVolumes
   - org.openrewrite.terraform.aws.EncryptEBSSnapshots
   - org.openrewrite.terraform.aws.EnableECRScanOnPush
+  - org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
+  - org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
+  - org.openrewrite.terraform.aws.EncryptNeptuneStorage
   - org.openrewrite.terraform.aws.EncryptRDSClusters
+  - org.openrewrite.terraform.aws.EncryptRedshift
+  - org.openrewrite.terraform.aws.ImmutableECRTags
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -40,6 +52,21 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
       content: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
+displayName: Encrypt EBS volume launch configurations
+description: EBS volumes allow you to create encrypted launch configurations when creating EC2 instances and auto scaling. When the entire EBS volume is encrypted, data stored at rest on the volume, disk I/O, snapshots created from the volume, and data in-transit between EBS and EC2 are all encrypted.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_launch_configuration
+      content: |-
+        root_block_device {
+          encrypted = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
@@ -63,6 +90,18 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
+      content: 'storage_encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptAuroraClusters
+displayName: Encrypt Aurora clusters
+description: Native Aurora encryption helps protect your cloud applications and fulfils compliance requirements for data-at-rest encryption.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_rds_cluster
       content: 'storage_encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -106,3 +145,127 @@ recipeList:
         image_scanning_configuration {
           scan_on_push = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
+displayName: Encrypt ElastiCache Redis at rest
+description: ElastiCache for Redis offers default encryption at rest as a service.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_elasticache_replication_group
+      content: 'at_rest_encryption_enabled = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
+displayName: Encrypt ElastiCache Redis in transit
+description: ElastiCache for Redis offers optional encryption in transit. In-transit encryption provides an additional layer of data protection when transferring data over standard HTTPS protocol.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_elasticache_replication_group
+      content: 'transit_encryption_enabled = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
+displayName: Encrypt Neptune storage
+description: Encryption of Neptune storage protects data and metadata against unauthorized access.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_neptune_cluster
+      content: 'storage_encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptDAXStorage
+displayName: Encrypt DAX storage at rest
+description: DAX encryption at rest automatically integrates with AWS KMS for managing the single service default key used to encrypt clusters.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_neptune_cluster
+      content: 'server_side_encryption = enabled'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.ImmutableECRTags
+displayName: Make ECR tags immutable
+description: Amazon ECR supports immutable tags, preventing image tags from being overwritten. In the past, ECR tags could have been overwritten, this could be overcome by requiring users to uniquely identify an image using a naming convention.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_neptune_cluster
+      content: 'image_tag_mutability = "IMMUTABLE"'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptRedshift
+displayName: Encrypt DAX storage at rest
+description: Redshift clusters should be securely encrypted at rest.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_neptune_cluster
+      content: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptDocumentDB
+displayName: Encrypt Neptune storage
+description: The encryption feature available for Amazon DocumentDB clusters provides an additional layer of data protection by helping secure your data against unauthorized access to the underlying storage.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_docdb_cluster
+      content: 'storage_encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptCodeBuild
+displayName: Encrypt CodeBuild projects
+description: Build artifacts, such as a cache, logs, exported raw test report data files, and build results, are encrypted by default using CMKs for Amazon S3 that are managed by the AWS Key Management Service.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_codebuild_project
+      content: 'encryption_disabled = false'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
+displayName: Encrypt CodeBuild projects
+description: As a request/response method IMDSv1 is prone to local misconfigurations.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_instance
+      content: |-
+        metadata_options {
+          http_endpoint = "enabled"
+          http_tokens   = "required"
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableApiGatewayCaching
+displayName: Enable API gateway caching
+description: Enable caching for all methods of API Gateway.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_codebuild_project
+      content: 'cache_cluster_enabled = true'
