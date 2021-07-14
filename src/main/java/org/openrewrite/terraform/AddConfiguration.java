@@ -17,8 +17,9 @@ package org.openrewrite.terraform;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.openrewrite.*;
-import org.openrewrite.hcl.HclParser;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Option;
+import org.openrewrite.Recipe;
 import org.openrewrite.hcl.HclTemplate;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.BodyContent;
@@ -78,9 +79,9 @@ public class AddConfiguration extends Recipe {
                         if (content instanceof Hcl.Attribute && ((Hcl.Attribute) content).getSimpleName().equals(contentName)) {
                             // discard the in-progress change and return
                             return block;
-                        } else if(content instanceof Hcl.Block) {
+                        } else if (content instanceof Hcl.Block) {
                             Hcl.Block siblingBlock = (Hcl.Block) content;
-                            if(siblingBlock.getType() != null && siblingBlock.getType().getName().equals(contentName)) {
+                            if (siblingBlock.getType() != null && siblingBlock.getType().getName().equals(contentName)) {
                                 return block;
                             }
                         }
