@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test
 import org.openrewrite.Recipe
 import org.openrewrite.hcl.HclRecipeTest
 
-class AddConfigurationTest: HclRecipeTest {
+class AddConfigurationTest : HclRecipeTest {
     override val recipe: Recipe
         get() = AddConfiguration(
             "aws_ebs_volume",

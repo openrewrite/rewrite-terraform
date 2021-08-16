@@ -30,7 +30,6 @@ import java.util.List;
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class AddConfiguration extends Recipe {
-
     @Option(displayName = "Resource name",
             description = "A Terraform resource name, without the quotes.",
             example = "aws_ebs_volume")
