@@ -40,6 +40,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptRedshift
   - org.openrewrite.terraform.aws.ImmutableECRTags
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
+  - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -269,3 +270,18 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_codebuild_project
       content: 'cache_cluster_enabled = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
+displayName: Encrypt EFS Volumes in ECS Task Definitions in transit
+description: Enable attached EFS definitions in ECS tasks to use encryption in transit.
+tags:
+  - terraform
+  - AWS
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ecs_task_definition
+      content: |-
+        volume {
+          transit_encryption = "ENABLED"
+        }
