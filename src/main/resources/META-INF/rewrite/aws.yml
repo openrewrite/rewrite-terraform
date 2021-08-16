@@ -208,7 +208,7 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRedshift
-displayName: Encrypt DAX storage at rest
+displayName: Encrypt Redshift storage at rest
 description: Redshift clusters should be securely encrypted at rest.
 tags:
   - terraform
@@ -220,7 +220,7 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptDocumentDB
-displayName: Encrypt Neptune storage
+displayName: Encrypt DocumentDB storage
 description: The encryption feature available for Amazon DocumentDB clusters provides an additional layer of data protection by helping secure your data against unauthorized access to the underlying storage.
 tags:
   - terraform
@@ -244,7 +244,7 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
-displayName: Disable Instance Metadata Service version 1.
+displayName: Disable Instance Metadata Service version 1
 description: As a request/response method IMDSv1 is prone to local misconfigurations.
 tags:
   - terraform
