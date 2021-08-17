@@ -23,6 +23,7 @@ tags:
   - GCP
 recipeList:
   - org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
+  - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -37,4 +38,21 @@ recipeList:
       content: |-
         pod_security_policy_config {
           enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
+displayName: Enable VPC Flow Logs for subnetworks
+description: Ensure GCP VPC flow logs for subnets are enabled. Flow Logs capture information on IP traffic moving through network interfaces. This information can be used to monitor anomalous traffic and provide security insights.
+tags:
+  - terraform
+  - GCP
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_compute_subnetwork
+      content: |-
+        log_config {
+          aggregation_interval = "INTERVAL_10_MIN"
+          flow_sampling        = 0.5
+          metadata             = "INCLUDE_ALL_METADATA"
         }
