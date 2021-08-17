@@ -28,6 +28,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
+  - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -118,4 +119,19 @@ recipeList:
       content: |-
         network_rules {
           default_action = "Deny"
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
+displayName: Encrypt Azure VM data disk with ADE/CMK
+description: Ensure Azure VM data disk is encrypted with ADE/CMK.
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_managed_disk
+      content: |-
+        encryption_settings {
+          enabled = true
         }
