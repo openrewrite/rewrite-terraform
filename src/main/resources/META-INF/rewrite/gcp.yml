@@ -27,6 +27,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
+  - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -107,3 +108,29 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_compute_instance
       content: can_ip_forward = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
+displayName: Ensure the GKE metadata server is enabled
+description: Ensure the GKE metadata server is enabled.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_69
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: |-
+        node_config {
+          workload_metadata_config {
+            node_metadata = "GKE_METADATA_SERVER"
+          }
+        }
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_node_pool
+      content: |-
+        node_config {
+          workload_metadata_config {
+            node_metadata = "GKE_METADATA_SERVER"
+          }
+        }
