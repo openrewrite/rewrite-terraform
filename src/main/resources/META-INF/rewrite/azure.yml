@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+  - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -71,3 +72,18 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
+displayName: Enable Azure Storage Account Trusted Microsoft Services access
+description: Ensure Azure Storage Account Trusted Microsoft Services access is enabled. # https://docs.bridgecrew.io/docs/enable-trusted-microsoft-services-for-storage-account-access todo
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_account
+      content: 'bypass = ["AzureServices"]'
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_account_network_rules
+      content: 'bypass = ["AzureServices"]'
