@@ -28,11 +28,12 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
   - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
+  - org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
 displayName: Enable `PodSecurityPolicy` controller on Google Kubernetes Engine (GKE) clusters
-description: Ensure `PodSecurityPolicy` controller is enabled on Google Kubernetes Engine (GKE) clusters.
+description: Ensure `PodSecurityPolicy` controller is enabled on Google Kubernetes Engine (GKE) clusters. # expand description, fixme
 tags:
   - terraform
   - GCP
@@ -66,7 +67,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
 displayName: Ensure compute instances launch with shielded VM enabled
-description: Ensure compute instances launch with shielded VM enabled.
+description: Ensure compute instances launch with shielded VM enabled. # expand description, fixme
 tags:
   - terraform
   - GCP
@@ -83,7 +84,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
 displayName: Ensure GCP VM instances have block project-wide SSH keys feature enabled
-description: Ensure GCP VM instances have block project-wide SSH keys feature enabled.
+description: Ensure GCP VM instances have block project-wide SSH keys feature enabled. # expand description, fixme
 tags:
   - terraform
   - GCP
@@ -99,7 +100,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
 displayName: Ensure IP forwarding on instances is disabled
-description: Ensure IP forwarding on instances is disabled.
+description: Ensure IP forwarding on instances is disabled. # expand description, fixme
 tags:
   - terraform
   - GCP
@@ -112,7 +113,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
 displayName: Ensure the GKE metadata server is enabled
-description: Ensure the GKE metadata server is enabled.
+description: Ensure the GKE metadata server is enabled. # expand description, fixme
 tags:
   - terraform
   - GCP
@@ -133,4 +134,20 @@ recipeList:
           workload_metadata_config {
             node_metadata = "GKE_METADATA_SERVER"
           }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
+displayName: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled
+description: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled. # expand description, fixme
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_9
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_node_pool
+      content: |-
+        management {
+          auto_repair = true
         }
