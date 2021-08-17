@@ -23,6 +23,7 @@ tags:
   - Azure
 recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
+  - org.openrewrite.terraform.azure.DisableKubernetesDashboard
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -35,3 +36,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
       content: 'min_tls_version = TLS1_2'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.DisableKubernetesDashboard
+displayName: Disable Kubernetes dashboard
+description: Disabling the dashboard eliminates it as an attack vector. The dashboard add-on is disabled by default for all new clusters created on Kubernetes 1.18 or greater.
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_kubernetes_cluster
+      content: |-
+        addon_profile {
+          kube_dashboard {
+          enabled = false
+        }
