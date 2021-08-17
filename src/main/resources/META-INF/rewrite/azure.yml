@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
+  - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -87,3 +88,15 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account_network_rules
       content: 'bypass = ["AzureServices"]'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
+displayName: Enable Azure Storage secure transfer required
+description: Microsoft recommends requiring secure transfer for all storage accounts.
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_account
+      content: 'enable_https_traffic_only = true'
