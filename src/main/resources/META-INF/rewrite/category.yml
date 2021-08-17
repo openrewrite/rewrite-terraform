@@ -27,3 +27,10 @@ packageName: org.openrewrite.terraform.gcp
 tags:
   - terraform
   - GCP
+---
+type: specs.openrewrite.org/v1beta/category
+name: Azure
+packageName: org.openrewrite.terraform.azure
+tags:
+  - terraform
+  - Azure
