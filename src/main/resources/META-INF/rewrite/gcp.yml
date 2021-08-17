@@ -31,6 +31,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnsureBinaryAuthorizationIsUsed
   - org.openrewrite.terraform.gcp.EnsureSecureBootForShieldedGKENodesIsEnabled
   - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
+  - org.openrewrite.terraform.gcp.EnsureShieldedGKENodesAreEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
@@ -192,3 +193,16 @@ recipeList:
             node_metadata = "GKE_METADATA_SERVER"
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureShieldedGKENodesAreEnabled
+displayName: Ensure shielded GKE nodes are enabled
+description: Ensure shielded GKE nodes are enabled.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_71
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: enable_shielded_nodes = true
