@@ -22,14 +22,30 @@ tags:
   - terraform
   - GCP
 recipeList:
+  - org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
   - org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
-  - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
-  - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
-  - org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
+  - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
   - org.openrewrite.terraform.gcp.EnsureSecureBootForShieldedGKENodesIsEnabled
+  - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
+displayName: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled
+description: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_9
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_node_pool
+      content: |-
+        management {
+          auto_repair = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -66,23 +82,6 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
-displayName: Ensure compute instances launch with shielded VM enabled
-description: Ensure compute instances launch with shielded VM enabled.
-tags:
-  - terraform
-  - GCP
-  - CKV_GCP_39
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: google_compute_instance
-      content: |-
-        shielded_instance_config {
-          enable_integrity_monitoring = true
-          enable_vtpm = true
-        }
----
-type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
 displayName: Ensure GCP VM instances have block project-wide SSH keys feature enabled
 description: Ensure GCP VM instances have block project-wide SSH keys feature enabled.
@@ -112,45 +111,20 @@ recipeList:
       content: can_ip_forward = false
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
-displayName: Ensure the GKE metadata server is enabled
-description: Ensure the GKE metadata server is enabled.
+name: org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
+displayName: Ensure compute instances launch with shielded VM enabled
+description: Ensure compute instances launch with shielded VM enabled.
 tags:
   - terraform
   - GCP
-  - CKV_GCP_69
+  - CKV_GCP_39
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: google_container_cluster
+      resourceName: google_compute_instance
       content: |-
-        node_config {
-          workload_metadata_config {
-            node_metadata = "GKE_METADATA_SERVER"
-          }
-        }
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: google_container_node_pool
-      content: |-
-        node_config {
-          workload_metadata_config {
-            node_metadata = "GKE_METADATA_SERVER"
-          }
-        }
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
-displayName: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled
-description: Ensure GCP Kubernetes cluster node auto-repair configuration is enabled.
-tags:
-  - terraform
-  - GCP
-  - CKV_GCP_9
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: google_container_node_pool
-      content: |-
-        management {
-          auto_repair = true
+        shielded_instance_config {
+          enable_integrity_monitoring = true
+          enable_vtpm = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -176,5 +150,31 @@ recipeList:
         node_config {
           shielded_instance_config {
             enable_secure_boot = true
+          }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
+displayName: Ensure the GKE metadata server is enabled
+description: Ensure the GKE metadata server is enabled.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_69
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: |-
+        node_config {
+          workload_metadata_config {
+            node_metadata = "GKE_METADATA_SERVER"
+          }
+        }
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_node_pool
+      content: |-
+        node_config {
+          workload_metadata_config {
+            node_metadata = "GKE_METADATA_SERVER"
           }
         }

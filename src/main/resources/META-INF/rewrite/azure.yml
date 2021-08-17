@@ -22,27 +22,43 @@ tags:
   - terraform
   - Azure
 recipeList:
-  - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
-  - org.openrewrite.terraform.azure.DisableKubernetesDashboard
-  - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
-  - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
-  - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
-  - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
+  - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
+  - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
+  - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
+  - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
+  - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
-displayName: Ensure storage account uses latest TLS version
-description: Communication between an Azure Storage account and a client application is encrypted using Transport Layer Security (TLS). Microsoft recommends using the latest version of TLS for all your Microsoft Azure App Service web applications.
+name: org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
+displayName: Encrypt Azure VM data disk with ADE/CMK
+description: Ensure Azure VM data disk is encrypted with ADE/CMK.
 tags:
   - terraform
   - Azure
-  - CKV_AZURE_44
+  - CKV_AZURE_2
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_managed_disk
+      content: |-
+        encryption_settings {
+          enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
+displayName: Enable Azure Storage secure transfer required
+description: Microsoft recommends requiring secure transfer for all storage accounts.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_3
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
-      content: 'min_tls_version = TLS1_2'
+      content: 'enable_https_traffic_only = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.DisableKubernetesDashboard
@@ -61,53 +77,6 @@ recipeList:
             enabled = false
           }
         }
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
-displayName: Ensure AKS policies add-on
-description: Azure Policy Add-on for Kubernetes service (AKS) extends Gatekeeper v3, an admission controller webhook for Open Policy Agent (OPA), to apply at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
-tags:
-  - terraform
-  - Azure
-  - CKV_AZURE_116
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_kubernetes_cluster
-      content: |-
-        addon_profile {
-          azure_policy {
-            enabled = false
-          }
-        }
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
-displayName: Enable Azure Storage Account Trusted Microsoft Services access
-description: Certain Microsoft services that interact with storage accounts operate from networks that cannot be granted access through network rules. Using this configuration, you can allow the set of trusted Microsoft services to bypass those network rules.
-tags:
-  - terraform
-  - Azure
-  - CKV_AZURE_36
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_storage_account
-      content: 'bypass = ["AzureServices"]'
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_storage_account_network_rules
-      content: 'bypass = ["AzureServices"]'
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
-displayName: Enable Azure Storage secure transfer required
-description: Microsoft recommends requiring secure transfer for all storage accounts.
-tags:
-  - terraform
-  - Azure
-  - CKV_AZURE_3
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_storage_account
-      content: 'enable_https_traffic_only = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
@@ -129,20 +98,33 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
-displayName: Encrypt Azure VM data disk with ADE/CMK
-description: Ensure Azure VM data disk is encrypted with ADE/CMK.
+name: org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
+displayName: Enable Azure Storage Account Trusted Microsoft Services access
+description: Certain Microsoft services that interact with storage accounts operate from networks that cannot be granted access through network rules. Using this configuration, you can allow the set of trusted Microsoft services to bypass those network rules.
 tags:
   - terraform
   - Azure
-  - CKV_AZURE_2
+  - CKV_AZURE_36
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_managed_disk
-      content: |-
-        encryption_settings {
-          enabled = true
-        }
+      resourceName: azurerm_storage_account
+      content: 'bypass = ["AzureServices"]'
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_account_network_rules
+      content: 'bypass = ["AzureServices"]'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
+displayName: Ensure storage account uses latest TLS version
+description: Communication between an Azure Storage account and a client application is encrypted using Transport Layer Security (TLS). Microsoft recommends using the latest version of TLS for all your Microsoft Azure App Service web applications.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_44
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_account
+      content: 'min_tls_version = TLS1_2'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
@@ -156,3 +138,21 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: geo_redundant_backup_enabled = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+displayName: Ensure AKS policies add-on
+description: Azure Policy Add-on for Kubernetes service (AKS) extends Gatekeeper v3, an admission controller webhook for Open Policy Agent (OPA), to apply at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_116
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_kubernetes_cluster
+      content: |-
+        addon_profile {
+          azure_policy {
+            enabled = false
+          }
+        }

@@ -154,6 +154,7 @@ description: ElastiCache for Redis offers default encryption at rest as a servic
 tags:
   - terraform
   - AWS
+  - CKV_AWS_29
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_elasticache_replication_group
@@ -166,6 +167,7 @@ description: ElastiCache for Redis offers optional encryption in transit. In-tra
 tags:
   - terraform
   - AWS
+  - CKV_AWS_30
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_elasticache_replication_group
@@ -178,6 +180,7 @@ description: Encryption of Neptune storage protects data and metadata against un
 tags:
   - terraform
   - AWS
+  - CKV_AWS_44
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_neptune_cluster
@@ -190,9 +193,10 @@ description: DAX encryption at rest automatically integrates with AWS KMS for ma
 tags:
   - terraform
   - AWS
+  - CKV_AWS_47
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_neptune_cluster
+      resourceName: aws_dax_cluster
       content: 'server_side_encryption = enabled'
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -202,6 +206,7 @@ description: Amazon ECR supports immutable tags, preventing image tags from bein
 tags:
   - terraform
   - AWS
+  - CKV_AWS_51
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_neptune_cluster
@@ -214,9 +219,10 @@ description: Redshift clusters should be securely encrypted at rest.
 tags:
   - terraform
   - AWS
+  - CKV_AWS_64
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_neptune_cluster
+      resourceName: aws_redshift_cluster
       content: 'encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -226,6 +232,7 @@ description: The encryption feature available for Amazon DocumentDB clusters pro
 tags:
   - terraform
   - AWS
+  - CKV_AWS_74
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_docdb_cluster
@@ -238,6 +245,7 @@ description: Build artifacts, such as a cache, logs, exported raw test report da
 tags:
   - terraform
   - AWS
+  - CKV_AWS_147
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_codebuild_project
@@ -250,6 +258,7 @@ description: As a request/response method IMDSv1 is prone to local misconfigurat
 tags:
   - terraform
   - AWS
+  - CKV_AWS_79
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_instance
@@ -266,6 +275,7 @@ description: Enable caching for all methods of API Gateway.
 tags:
   - terraform
   - AWS
+  - CKV_AWS_120
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_codebuild_project
