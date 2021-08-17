@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
+  - org.openrewrite.terraform.gcp.DisableIPForwardingOnInstances
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -93,3 +94,16 @@ recipeList:
         metadata = {
           block-project-ssh-keys = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.DisableIPForwardingOnInstances
+displayName: Disable IP forwarding on instances
+description: Ensure IP forwarding on instances is disabled.
+tags:
+  - terraform
+  - GCP
+#  - CKV_GCP_36 # todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_compute_instance
+      content: can_ip_forward = false
