@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
+  - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -73,4 +74,20 @@ recipeList:
         shielded_instance_config {
           enable_integrity_monitoring = true
           enable_vtpm = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
+displayName: Ensure GCP VM instances have block project-wide SSH keys feature enabled
+description: Ensure GCP VM instances have block project-wide SSH keys feature enabled.
+tags:
+  - terraform
+  - GCP
+#  - BC_GCP_NETWORKING_8 # todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_compute_instance
+      content: |-
+        metadata = {
+          block-project-ssh-keys = true
         }
