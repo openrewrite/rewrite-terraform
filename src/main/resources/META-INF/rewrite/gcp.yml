@@ -28,6 +28,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
+  - org.openrewrite.terraform.gcp.EnsureBinaryAuthorizationIsUsed
   - org.openrewrite.terraform.gcp.EnsureSecureBootForShieldedGKENodesIsEnabled
   - org.openrewrite.terraform.gcp.EnsureTheGKEMetadataServerIsEnabled
 ---
@@ -126,6 +127,19 @@ recipeList:
           enable_integrity_monitoring = true
           enable_vtpm = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureBinaryAuthorizationIsUsed
+displayName: Ensure binary authorization is used
+description: Ensure binary authorization is used.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_66
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: enable_binary_authorization = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureSecureBootForShieldedGKENodesIsEnabled
