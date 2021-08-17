@@ -30,8 +30,8 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
-displayName: Enable PodSecurityPolicy controller on Google Kubernetes Engine (GKE) clusters
-description: Ensure PodSecurityPolicy controller is enabled on Google Kubernetes Engine (GKE) clusters.
+displayName: Enable `PodSecurityPolicy` controller on Google Kubernetes Engine (GKE) clusters
+description: Ensure `PodSecurityPolicy` controller is enabled on Google Kubernetes Engine (GKE) clusters.
 tags:
   - terraform
   - GCP
