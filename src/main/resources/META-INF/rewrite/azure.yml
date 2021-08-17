@@ -59,7 +59,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
 displayName: Ensure AKS policies add-on
-description: Ensure AKS uses Azure policies add-on. # https://docs.bridgecrew.io/docs/ensure-that-aks-uses-azure-policies-add-on todo
+description: [As per the AKS policy documentation](https://docs.microsoft.com/en-us/azure/aks/policy-reference), "Azure Policy Add-on for Kubernetes service (AKS) extends Gatekeeper v3, an admission controller webhook for Open Policy Agent (OPA), to apply at-scale enforcements and safeguards on your clusters in a centralized, consistent manner."
 tags:
   - terraform
   - Azure
@@ -76,7 +76,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
 displayName: Enable Azure Storage Account Trusted Microsoft Services access
-description: Ensure Azure Storage Account Trusted Microsoft Services access is enabled. # https://docs.bridgecrew.io/docs/enable-trusted-microsoft-services-for-storage-account-access todo
+description: Certain Microsoft services that interact with storage accounts operate from networks that cannot be granted access through network rules. Using this configuration, you can allow the set of trusted Microsoft services to bypass those network rules.
 tags:
   - terraform
   - Azure
