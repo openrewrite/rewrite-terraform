@@ -278,6 +278,7 @@ description: Enable attached EFS definitions in ECS tasks to use encryption in t
 tags:
   - terraform
   - AWS
+#  - CKV_AWS_97 # todo
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ecs_task_definition
