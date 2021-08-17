@@ -35,7 +35,7 @@ description: Ensure `PodSecurityPolicy` controller is enabled on Google Kubernet
 tags:
   - terraform
   - GCP
-#  - CKV_GCP_24 # todo
+  - CKV_GCP_24
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_container_cluster
@@ -51,7 +51,7 @@ description: Ensure GCP VPC flow logs for subnets are enabled. Flow Logs capture
 tags:
   - terraform
   - GCP
-#  - CKV_GCP_26 # todo
+  - CKV_GCP_26
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_compute_subnetwork
@@ -69,7 +69,7 @@ description: Ensure compute instances launch with shielded VM enabled.
 tags:
   - terraform
   - GCP
-#  - CKV_GCP_39 # todo
+  - CKV_GCP_39
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_compute_instance
@@ -86,7 +86,7 @@ description: Ensure GCP VM instances have block project-wide SSH keys feature en
 tags:
   - terraform
   - GCP
-#  - CKV_GCP_32 # todo
+  - CKV_GCP_32
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_compute_instance
@@ -102,7 +102,7 @@ description: Ensure IP forwarding on instances is disabled.
 tags:
   - terraform
   - GCP
-#  - CKV_GCP_36 # todo
+  - CKV_GCP_36
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: google_compute_instance

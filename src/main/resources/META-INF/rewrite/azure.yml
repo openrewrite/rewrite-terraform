@@ -38,7 +38,7 @@ description: Communication between an Azure Storage account and a client applica
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_44 # todo
+  - CKV_AZURE_44
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
@@ -51,7 +51,7 @@ description: Disabling the dashboard eliminates it as an attack vector. The dash
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_8 # todo
+  - CKV_AZURE_8
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_kubernetes_cluster
@@ -69,7 +69,7 @@ description: Azure Policy Add-on for Kubernetes service (AKS) extends Gatekeeper
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_116 # todo
+  - CKV_AZURE_116
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_kubernetes_cluster
@@ -87,7 +87,7 @@ description: Certain Microsoft services that interact with storage accounts oper
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_36 # todo
+  - CKV_AZURE_36
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
@@ -103,7 +103,7 @@ description: Microsoft recommends requiring secure transfer for all storage acco
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_3 # todo
+  - CKV_AZURE_3
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
@@ -116,7 +116,7 @@ description: Ensure Azure Storage Account default network access is set to Deny.
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_35 # todo
+  - CKV_AZURE_35
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account_network_rules
@@ -135,7 +135,7 @@ description: Ensure Azure VM data disk is encrypted with ADE/CMK.
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_2 # todo
+  - CKV_AZURE_2
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_managed_disk
@@ -151,7 +151,7 @@ description: Ensure PostgreSQL server enables geo-redundant backups.
 tags:
   - terraform
   - Azure
-#  - CKV_AZURE_102 # todo
+  - CKV_AZURE_102
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
