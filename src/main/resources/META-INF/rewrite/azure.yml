@@ -29,6 +29,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
+  - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -135,3 +136,15 @@ recipeList:
         encryption_settings {
           enabled = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
+displayName: Enable geo-redundant backups on PostgreSQL server
+description: Ensure PostgreSQL server enables geo-redundant backups.
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_postgresql_server
+      content: geo_redundant_backup_enabled = true
