@@ -24,6 +24,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -50,5 +51,23 @@ recipeList:
       content: |-
         addon_profile {
           kube_dashboard {
-          enabled = false
+            enabled = false
+          }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+displayName: Ensure AKS policies add-on
+description: Ensure AKS uses Azure policies add-on. # https://docs.bridgecrew.io/docs/ensure-that-aks-uses-azure-policies-add-on todo
+tags:
+  - terraform
+  - Azure
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_kubernetes_cluster
+      content: |-
+        addon_profile {
+          azure_policy {
+            enabled = false
+          }
         }
