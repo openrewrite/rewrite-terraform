@@ -26,7 +26,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
-  - org.openrewrite.terraform.gcp.DisableIPForwardingOnInstances
+  - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
@@ -96,8 +96,8 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.gcp.DisableIPForwardingOnInstances
-displayName: Disable IP forwarding on instances
+name: org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
+displayName: Ensure IP forwarding on instances is disabled
 description: Ensure IP forwarding on instances is disabled.
 tags:
   - terraform
