@@ -24,6 +24,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.gcp.EnsureGCPKubernetesClusterNodeAutoRepairConfigurationIsEnabled
   - org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
+  - org.openrewrite.terraform.gcp.EnsurePrivateClusterIsEnabledWhenCreatingKubernetesClusters
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
@@ -64,6 +65,22 @@ recipeList:
       content: |-
         pod_security_policy_config {
           enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsurePrivateClusterIsEnabledWhenCreatingKubernetesClusters
+displayName: Ensure private cluster is enabled when creating Kubernetes clusters
+description: Ensure private cluster is enabled when creating Kubernetes clusters.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_25
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: |-
+        private_cluster_config {
+          enable_private_nodes = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
