@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
   - org.openrewrite.terraform.azure.EnsureMSSQLServersHaveEmailServiceAndCoAdministratorsEnabled
   - org.openrewrite.terraform.azure.EnsureMySQLServerDatabasesHaveEnforceSSLConnectionEnabled
   - org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
@@ -88,6 +89,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
+displayName: Ensure Azure SQL server send alerts to field value is set
+description: Ensure Azure SQL server send alerts to field value is set.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_26
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mssql_server_security_alert_policy
+      content: 'email_addresses = ["placeholderusername@noemail.invalid"]'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureMSSQLServersHaveEmailServiceAndCoAdministratorsEnabled
