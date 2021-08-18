@@ -29,6 +29,7 @@ recipeList:
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
+  - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
@@ -144,6 +145,19 @@ recipeList:
       content: 'min_tls_version = TLS1_2'
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
+displayName: Ensure public network access enabled is set to False for mySQL servers
+description: Ensure public network access enabled is set to False for mySQL servers.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_53
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mysql_server
+      content: public_network_access_enabled = false
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
 displayName: Ensure PostgreSQL server disables public network access
 description: Ensure PostgreSQL server disables public network access.
@@ -153,7 +167,7 @@ tags:
   - CKV_AZURE_68
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_storage_account
+      resourceName: azurerm_postgresql_server
       content: public_network_access_enabled = false
 ---
 type: specs.openrewrite.org/v1beta/recipe
