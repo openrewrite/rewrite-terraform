@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
   - org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsToAdminsIsEnabled
@@ -94,6 +95,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
+displayName: Ensure standard pricing tier is selected
+description: Ensure standard pricing tier is selected.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_19
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_security_center_subscription_pricing
+      content: tier = "Standard"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
