@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsToAdminsIsEnabled
   - org.openrewrite.terraform.azure.EnsureAzureSQLServerAuditLogRetentionIsGreaterThan90Days
@@ -93,6 +94,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
+displayName: Ensure a security contact phone number is present
+description: Ensure a security contact phone number is present.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_20
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_security_center_contact
+      content: phone = "+1-555-555-5555"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
