@@ -31,6 +31,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+  - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesInfrastructureEncryption
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
@@ -89,7 +90,7 @@ tags:
   - CKV_AZURE_29
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: azurerm_kubernetes_cluster
+      resourceName: azurerm_postgresql_server
       content: ssl_enforcement_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -170,3 +171,16 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesInfrastructureEncryption
+displayName: Ensure PostgreSQL server enables infrastructure encryption
+description: Ensure PostgreSQL server enables infrastructure encryption.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_130
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_postgresql_server
+      content: infrastructure_encryption_enabled = true
