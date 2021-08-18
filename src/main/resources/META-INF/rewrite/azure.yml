@@ -36,6 +36,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+  - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesInfrastructureEncryption
 ---
@@ -241,6 +242,22 @@ recipeList:
           azure_policy {
             enabled = false
           }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureMySQLServerEnablesThreatDetectionPolicy
+displayName: Ensure MySQL server enables Threat Detection policy
+description: Ensure MySQL server enables Threat Detection policy.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_127
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mysql_server
+      content: |-
+        threat_detection_policy {
+          enabled = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
