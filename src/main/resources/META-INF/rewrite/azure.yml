@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
   - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
   - org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
@@ -95,6 +96,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
+displayName: Ensure Azure Network Watcher NSG flow logs retention is greater than 90 days
+description: Ensure Azure Network Watcher NSG flow logs retention is greater than 90 days.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_12
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_network_watcher_flow_log
+      content: days = 90
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
