@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnablePodSecurityPolicyControllerOnGKEClusters
   - org.openrewrite.terraform.gcp.EnsurePrivateClusterIsEnabledWhenCreatingKubernetesClusters
   - org.openrewrite.terraform.gcp.EnableVPCFlowLogsForSubnetworks
+  - org.openrewrite.terraform.gcp.EnsureGCPCloudStorageBucketWithUniformBucketLevelAccessAreEnabled
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
@@ -101,6 +102,19 @@ recipeList:
           flow_sampling        = 0.5
           metadata             = "INCLUDE_ALL_METADATA"
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnsureGCPCloudStorageBucketWithUniformBucketLevelAccessAreEnabled
+displayName: Ensure GCP cloud storage bucket with uniform bucket-level access are enabled
+description: Ensure GCP cloud storage bucket with uniform bucket-level access are enabled.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_29
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_storage_bucket
+      content: uniform_bucket_level_access = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
