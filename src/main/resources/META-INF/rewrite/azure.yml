@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureAzureSQLServerThreatDetectionAlertsAreEnabledForAllThreatTypes
   - org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
   - org.openrewrite.terraform.azure.EnsureMSSQLServersHaveEmailServiceAndCoAdministratorsEnabled
   - org.openrewrite.terraform.azure.EnsureMySQLServerDatabasesHaveEnforceSSLConnectionEnabled
@@ -89,6 +90,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureSQLServerThreatDetectionAlertsAreEnabledForAllThreatTypes
+displayName: Ensure Azure SQL Server threat detection alerts are enabled for all threat types
+description: Ensure Azure SQL Server threat detection alerts are enabled for all threat types.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_25
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mssql_server_security_alert_policy
+      content: 'disabled_alerts = []'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
