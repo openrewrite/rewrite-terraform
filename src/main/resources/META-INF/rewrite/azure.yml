@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
@@ -77,6 +78,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
+displayName: Ensure Azure PostgreSQL database server with SSL connection is enabled
+description: Ensure Azure PostgreSQL database server with SSL connection is enabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_29
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_kubernetes_cluster
+      content: ssl_enforcement_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
