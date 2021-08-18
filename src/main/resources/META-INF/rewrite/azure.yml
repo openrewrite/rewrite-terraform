@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
+  - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsToAdminsIsEnabled
   - org.openrewrite.terraform.azure.EnsureAzureSQLServerAuditLogRetentionIsGreaterThan90Days
   - org.openrewrite.terraform.azure.EnsureAzureSQLServerThreatDetectionAlertsAreEnabledForAllThreatTypes
   - org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
@@ -105,6 +106,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_security_center_contact
       content: alert_notifications = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsToAdminsIsEnabled
+displayName: Ensure Send email notification for high severity alerts to admins is enabled
+description: Ensure Send email notification for high severity alerts to admins is enabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_22
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_security_center_contact
+      content: alerts_to_admins = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAzureSQLServerAuditLogRetentionIsGreaterThan90Days
