@@ -31,6 +31,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+  - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesInfrastructureEncryption
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -170,6 +171,22 @@ recipeList:
           azure_policy {
             enabled = false
           }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
+displayName: Ensure PostgreSQL server enables Threat Detection policy
+description: Ensure PostgreSQL server enables Threat Detection policy.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_128
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_postgresql_server
+      content: |-
+        threat_detection_policy {
+          enabled = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
