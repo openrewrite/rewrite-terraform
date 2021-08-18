@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureMySQLServerDatabasesHaveEnforceSSLConnectionEnabled
   - org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
@@ -83,6 +84,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureMySQLServerDatabasesHaveEnforceSSLConnectionEnabled
+displayName: Ensure MySQL server databases have Enforce SSL connection enabled
+description: Ensure MySQL server databases have Enforce SSL connection enabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_28
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mysql_server
+      content: ssl_enforcement_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
