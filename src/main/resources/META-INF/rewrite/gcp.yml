@@ -29,6 +29,7 @@ recipeList:
   - org.openrewrite.terraform.gcp.EnsureGCPVMInstancesHaveBlockProjectWideSSHKeysFeatureEnabled
   - org.openrewrite.terraform.gcp.EnsureIPForwardingOnInstancesIsDisabled
   - org.openrewrite.terraform.gcp.EnsureComputeInstancesLaunchWithShieldedVMEnabled
+  - org.openrewrite.terraform.gcp.EnableVPCFlowLogsAndIntranodeVisibility
   - org.openrewrite.terraform.gcp.EnsureBinaryAuthorizationIsUsed
   - org.openrewrite.terraform.gcp.EnsureGCPKubernetesEngineClustersHaveLegacyComputeEngineMetadataEndpointsDisabled
   - org.openrewrite.terraform.gcp.EnsureSecureBootForShieldedGKENodesIsEnabled
@@ -146,6 +147,19 @@ recipeList:
           enable_integrity_monitoring = true
           enable_vtpm = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.gcp.EnableVPCFlowLogsAndIntranodeVisibility
+displayName: Enable VPC flow logs and intranode visibility
+description: Enable VPC flow logs and intranode visibility.
+tags:
+  - terraform
+  - GCP
+  - CKV_GCP_61
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: google_container_cluster
+      content: enable_intranode_visibility = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.gcp.EnsureBinaryAuthorizationIsUsed
