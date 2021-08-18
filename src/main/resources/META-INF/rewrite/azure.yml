@@ -31,6 +31,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
+  - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
@@ -169,6 +170,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: public_network_access_enabled = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
+displayName: Ensure MySQL server enables geo-redundant backups
+description: Ensure MySQL server enables geo-redundant backups.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_94
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_mysql_server
+      content: geo_redundant_backup_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
