@@ -52,6 +52,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureAppServiceEnablesDetailedErrorMessages
   - org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
+  - org.openrewrite.terraform.azure.EnsureManagedIdentityProviderIsEnabledForAppServices
   - org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
 #  - org.openrewrite.terraform.azure.EnsureAppServicesUseAzureFiles # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
@@ -509,6 +510,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: public_network_access_enabled = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureManagedIdentityProviderIsEnabledForAppServices
+displayName: Ensure managed identity provider is enabled for app services
+description: Ensure managed identity provider is enabled for app services.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_71
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        identity {
+          type = "SystemAssigned"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
