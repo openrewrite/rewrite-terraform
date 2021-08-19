@@ -50,6 +50,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
+#  - org.openrewrite.terraform.azure.EnsureAppServicesUseAzureFiles # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
@@ -470,6 +471,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_app_service
       content: ftps_state = "Disabled"
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAppServicesUseAzureFiles
+displayName: Ensure app services use Azure files
+description: Ensure app services use Azure files.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_88 # questionable, todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        storage_account {
+          type = "AzureFiles"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
