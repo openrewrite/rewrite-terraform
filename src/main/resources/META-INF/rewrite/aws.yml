@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptEBSVolumes
   - org.openrewrite.terraform.aws.EncryptEBSSnapshots
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
+  - org.openrewrite.terraform.aws.EnsureAWSElasticsearchHasNodeToNodeEncryptionEnabled
   - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
   - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyExpiresPasswordsWithin90DaysOrLess
@@ -98,6 +99,22 @@ recipeList:
       resourceName: aws_elasticsearch_domain
       content: |-
         encrypt_at_rest {
+          enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchHasNodeToNodeEncryptionEnabled
+displayName: Ensure AWS Elasticsearch has node-to-node encryption enabled
+description: Ensure AWS Elasticsearch has node-to-node encryption enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_6
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_elasticsearch_domain
+      content: |-
+        node_to_node_encryption {
           enabled = true
         }
 ---
