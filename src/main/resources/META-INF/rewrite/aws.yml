@@ -37,7 +37,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneUppercaseLetter
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
-  - org.openrewrite.terraform.aws.EnsureTheS3BucketHasAccessLoggingEnabled
+#  - org.openrewrite.terraform.aws.EnsureTheS3BucketHasAccessLoggingEnabled # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
   - org.openrewrite.terraform.aws.EnsureAWSS3ObjectVersioningIsEnabled
   - org.openrewrite.terraform.aws.EnableDynamoDbPITR
@@ -282,8 +282,8 @@ recipeList:
       resourceName: aws_s3_bucket
       content: |-
         logging {
-          target_bucket = var.target_bucket \#todo
-          target_prefix = "log/${var.s3_bucket_name}" \#todo
+          target_bucket = var.target_bucket
+          target_prefix = "log/${var.s3_bucket_name}"
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
