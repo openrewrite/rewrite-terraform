@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
+#  - org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
   - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
   - org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
@@ -123,6 +124,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_network_watcher_flow_log
       content: days = 90
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled
+displayName: Ensure Web App has incoming client certificates enabled
+description: Ensure Web App has incoming client certificates enabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_17 # questionable if this should be on by default, todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: client_cert_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
