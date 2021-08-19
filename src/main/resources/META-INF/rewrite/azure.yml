@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
+  - org.openrewrite.terraform.azure.EnsureAzureAppServiceWebAppRedirectsHTTPToHTTPS
 #  - org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
   - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
@@ -127,6 +128,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_network_watcher_flow_log
       content: days = 90
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureAppServiceWebAppRedirectsHTTPToHTTPS
+displayName: Ensure Azure App Service Web app redirects HTTP to HTTPS
+description: Ensure Azure App Service Web app redirects HTTP to HTTPS.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_14
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: https_only = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled
