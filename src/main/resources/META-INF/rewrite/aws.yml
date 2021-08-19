@@ -48,6 +48,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
+  - org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -421,3 +422,16 @@ recipeList:
         domain_endpoint_options {
           enforce_https = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
+displayName: Ensure VPC subnets do not assign public IP by default
+description: Ensure VPC subnets do not assign public IP by default.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_130
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_subnet
+      content: map_public_ip_on_launch = false
