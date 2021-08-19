@@ -39,6 +39,7 @@ recipeList:
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
   - org.openrewrite.terraform.azure.EnsureActivityLogRetentionIsSetTo365DaysOrGreater
+  - org.openrewrite.terraform.azure.EnsureLogProfileIsConfiguredToCaptureAllActivities
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
@@ -301,6 +302,24 @@ recipeList:
           enabled = true
           days = 365
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureLogProfileIsConfiguredToCaptureAllActivities
+displayName: Ensure log profile is configured to capture all activities
+description: Ensure log profile is configured to capture all activities.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_38
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_monitor_log_profile
+      content: |-
+        categories = [
+          "Action",
+          "Delete",
+          "Write",
+        ]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
