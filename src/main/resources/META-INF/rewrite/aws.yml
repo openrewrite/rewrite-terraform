@@ -441,7 +441,7 @@ tags:
   - CKV_AWS_120
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_codebuild_project
+      resourceName: aws_api_gateway_rest_api
       content: cache_cluster_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
