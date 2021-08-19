@@ -42,6 +42,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureLogProfileIsConfiguredToCaptureAllActivities
   - org.openrewrite.terraform.azure.EnsureAllKeysHaveAnExpirationDate
   - org.openrewrite.terraform.azure.EnsureAKVSecretsHaveAnExpirationDateSet
+  - org.openrewrite.terraform.azure.EnsureAzureKeyVaultIsRecoverable
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
@@ -352,6 +353,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_key_vault_secret
       content: expiration_date = "2022-12-30T20:00:00Z"
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureKeyVaultIsRecoverable
+displayName: Ensure Azure key vault is recoverable
+description: Ensure Azure key vault is recoverable.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_42
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_key_vault
+      content: soft_delete_enabled = true
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_key_vault
+      content: purge_protection_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
