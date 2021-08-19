@@ -23,6 +23,7 @@ tags:
   - AWS
 recipeList:
   - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
+  - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
   - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
   - org.openrewrite.terraform.aws.EnableApiGatewayCaching
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
@@ -60,6 +61,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
       content: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
+displayName: Ensure AWS Elasticsearch domain encryption for data at rest is enabled
+description: Ensure AWS Elasticsearch domain encryption for data at rest is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_5
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_elasticsearch_domain
+      content: |-
+        encrypt_at_rest {
+          enabled = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
