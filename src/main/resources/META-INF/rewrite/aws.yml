@@ -47,6 +47,7 @@ recipeList:
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
   - org.openrewrite.terraform.aws.EnsureCloudTrailLogFileValidationIsEnabled
   - org.openrewrite.terraform.aws.EnsureAmazonEKSControlPlaneLoggingEnabledForAllLogTypes
+  - org.openrewrite.terraform.aws.EnsureAWSEKSClusterEndpointAccessIsPubliclyDisabled
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
   - org.openrewrite.terraform.aws.EncryptDAXStorage
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
@@ -425,6 +426,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_eks_cluster
       content: enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSEKSClusterEndpointAccessIsPubliclyDisabled
+displayName: Ensure AWS EKS cluster endpoint access is publicly disabled
+description: Ensure AWS EKS cluster endpoint access is publicly disabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_39
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_eks_cluster
+      content: |-
+        vpc_config {
+          endpoint_public_access = false
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
