@@ -314,7 +314,7 @@ tags:
   - CKV_AWS_51
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_neptune_cluster
+      resourceName: aws_ecr_repository
       content: image_tag_mutability = "IMMUTABLE"
 ---
 type: specs.openrewrite.org/v1beta/recipe
