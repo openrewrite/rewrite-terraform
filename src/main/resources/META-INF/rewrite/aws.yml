@@ -27,6 +27,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
   - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
   - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
+  - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyExpiresPasswordsWithin90DaysOrLess
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
@@ -128,6 +129,19 @@ recipeList:
         root_block_device {
           encrypted = true
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyExpiresPasswordsWithin90DaysOrLess
+displayName: Ensure IAM password policy expires passwords within 90 days or less
+description: Ensure IAM password policy expires passwords within 90 days or less.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_9
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_iam_account_password_policy
+      content: max_password_age = 90
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
