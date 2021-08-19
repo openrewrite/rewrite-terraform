@@ -48,6 +48,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureCloudTrailLogFileValidationIsEnabled
   - org.openrewrite.terraform.aws.EnsureAmazonEKSControlPlaneLoggingEnabledForAllLogTypes
   - org.openrewrite.terraform.aws.EnsureAWSEKSClusterEndpointAccessIsPubliclyDisabled
+  - org.openrewrite.terraform.aws.EnsureAWSEFSWithEncryptionForDataAtRestIsEnabled
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
   - org.openrewrite.terraform.aws.EncryptDAXStorage
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
@@ -442,6 +443,19 @@ recipeList:
         vpc_config {
           endpoint_public_access = false
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSEFSWithEncryptionForDataAtRestIsEnabled
+displayName: Ensure AWS EFS with encryption for data at rest is enabled
+description: Ensure AWS EFS with encryption for data at rest is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_42
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_efs_file_system
+      content: encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
