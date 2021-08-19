@@ -98,7 +98,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
-      content: 'enable_https_traffic_only = true'
+      content: enable_https_traffic_only = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.DisableKubernetesDashboard
@@ -287,7 +287,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_mssql_server_security_alert_policy
-      content: 'disabled_alerts = []'
+      content: disabled_alerts = []
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAzureSQLServerSendAlertsToFieldValueIsSet
@@ -300,7 +300,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_mssql_server_security_alert_policy
-      content: 'email_addresses = ["placeholderusername@noemail.invalid"]'
+      content: email_addresses = ["placeholderusername@noemail.invalid"]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureMSSQLServersHaveEmailServiceAndCoAdministratorsEnabled
@@ -352,7 +352,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account_network_rules
-      content: 'default_action = "Deny"'
+      content: default_action = "Deny"
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
       content: |-
@@ -371,10 +371,10 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
-      content: 'bypass = ["AzureServices"]'
+      content: bypass = ["AzureServices"]
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account_network_rules
-      content: 'bypass = ["AzureServices"]'
+      content: bypass = ["AzureServices"]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureActivityLogRetentionIsSetTo365DaysOrGreater
