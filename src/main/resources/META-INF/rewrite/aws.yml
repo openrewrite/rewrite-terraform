@@ -23,6 +23,7 @@ tags:
   - AWS
 recipeList:
   - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
+  - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
   - org.openrewrite.terraform.aws.EnableApiGatewayCaching
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
   - org.openrewrite.terraform.aws.EncryptAuroraClusters
@@ -58,6 +59,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
       content: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
+displayName: Ensure AWS CMK rotation is enabled
+description: Ensure AWS CMK rotation is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_7
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_kms_key
+      content: enable_key_rotation = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
