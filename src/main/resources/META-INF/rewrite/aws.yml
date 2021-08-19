@@ -51,6 +51,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
   - org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
   - org.openrewrite.terraform.aws.EnsureEC2IsEBSOptimized
+  - org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -466,3 +467,16 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_instance
       content: ebs_optimized = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
+displayName: Ensure detailed monitoring for EC2 instances is enabled
+description: Ensure detailed monitoring for EC2 instances is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_126
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_instance
+      content: monitoring = true
