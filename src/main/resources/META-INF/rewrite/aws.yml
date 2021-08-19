@@ -54,6 +54,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
   - org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
+  - org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -508,3 +509,16 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
       content: publicly_accessible = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
+displayName: Ensure respective logs of Amazon RDS are enabled
+description: Ensure respective logs of Amazon RDS are enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_129
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      content: enabled_cloudwatch_logs_exports = ["general", "error", "slowquery"]
