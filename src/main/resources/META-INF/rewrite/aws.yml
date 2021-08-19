@@ -52,6 +52,7 @@ description: Encrypting EBS volumes ensures that replicated copies of your image
 tags:
   - terraform
   - AWS
+  - CKV_AWS_3
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
@@ -64,6 +65,7 @@ description: EBS volumes allow you to create encrypted launch configurations whe
 tags:
   - terraform
   - AWS
+  - CKV_AWS_8
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_launch_configuration
@@ -79,6 +81,7 @@ description: EBS snapshots should be encrypted, as they often include sensitive 
 tags:
   - terraform
   - AWS
+  - CKV_AWS_4
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_snapshot
@@ -91,6 +94,7 @@ description: Native RDS encryption helps protect your cloud applications and ful
 tags:
   - terraform
   - AWS
+  - CKV_AWS_16
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
@@ -103,6 +107,7 @@ description: Native Aurora encryption helps protect your cloud applications and 
 tags:
   - terraform
   - AWS
+  - CKV_AWS_96
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_rds_cluster
@@ -115,6 +120,7 @@ description: Secure communication by default.
 tags:
   - terraform
   - AWS
+  - CKV_AWS_34
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_cloudfront_distribution
@@ -122,11 +128,12 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnableDynamoDbPITR
-displayName: Scan images pushed to ECR
+displayName: Enable point-in-time recovery for DynamoDB
 description: DynamoDB Point-In-Time Recovery (PITR) is an automatic backup service for DynamoDB table data that helps protect your DynamoDB tables from accidental write or delete operations.
 tags:
   - terraform
   - AWS
+  - CKV_AWS_28
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_dynamodb_table
@@ -137,11 +144,12 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnableECRScanOnPush
-displayName: Enable point-in-time recovery for DynamoDB
+displayName: Scan images pushed to ECR
 description: ECR Image Scanning assesses and identifies operating system vulnerabilities. Using automated image scans you can ensure container image vulnerabilities are found before getting pushed to production.
 tags:
   - terraform
   - AWS
+  - CKV_AWS_33
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ecr_repository
