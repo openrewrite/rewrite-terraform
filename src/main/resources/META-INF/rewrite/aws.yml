@@ -24,6 +24,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
   - org.openrewrite.terraform.aws.EnableApiGatewayCaching
+  - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
   - org.openrewrite.terraform.aws.EncryptAuroraClusters
   - org.openrewrite.terraform.aws.EncryptCodeBuild
   - org.openrewrite.terraform.aws.EncryptDAXStorage
@@ -305,6 +306,19 @@ recipeList:
           http_endpoint = "enabled"
           http_tokens   = "required"
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
+displayName: Ensure AWS Lambda function is configured for function-level concurrent execution limit
+description: Ensure AWS Lambda function is configured for function-level concurrent execution limit.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_115
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_lambda_function
+      content: reserved_concurrent_executions = 0
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnableApiGatewayCaching
