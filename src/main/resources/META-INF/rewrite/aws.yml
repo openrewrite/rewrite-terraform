@@ -50,6 +50,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
   - org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
+  - org.openrewrite.terraform.aws.EnsureEC2IsEBSOptimized
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -452,3 +453,16 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_subnet
       content: map_public_ip_on_launch = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureEC2IsEBSOptimized
+displayName: Ensure EC2 is EBS optimized
+description: Ensure EC2 is EBS optimized.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_135
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_instance
+      content: ebs_optimized = true
