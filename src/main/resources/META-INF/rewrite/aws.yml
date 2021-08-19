@@ -33,6 +33,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptEBSVolumes
   - org.openrewrite.terraform.aws.EncryptEBSSnapshots
   - org.openrewrite.terraform.aws.EnableECRScanOnPush
+  - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
@@ -145,6 +146,26 @@ recipeList:
       content: |-
         image_scanning_configuration {
           scan_on_push = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
+displayName: Ensure data stored in an S3 bucket is securely encrypted at rest
+description: Ensure data stored in an S3 bucket is securely encrypted at rest.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_19
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_s3_bucket
+      content: |-
+        server_side_encryption_configuration {
+          rule {
+            apply_server_side_encryption_by_default {
+              sse_algorithm = "AES256"
+            }
+          }
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
