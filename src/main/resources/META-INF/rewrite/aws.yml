@@ -46,6 +46,7 @@ recipeList:
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
   - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
+  - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -386,4 +387,20 @@ recipeList:
       content: |-
         volume {
           transit_encryption = "ENABLED"
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
+displayName: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled
+description: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_83
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_elasticsearch_domain
+      content: |-
+        domain_endpoint_options {
+          enforce_https = true
         }
