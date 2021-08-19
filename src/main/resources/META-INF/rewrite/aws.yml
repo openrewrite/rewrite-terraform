@@ -22,39 +22,39 @@ tags:
   - terraform
   - AWS
 recipeList:
-  - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
-  - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
-  - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
-  - org.openrewrite.terraform.aws.EnableApiGatewayCaching
-  - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
-  - org.openrewrite.terraform.aws.EncryptAuroraClusters
-  - org.openrewrite.terraform.aws.EncryptCodeBuild
-  - org.openrewrite.terraform.aws.EncryptDAXStorage
-  - org.openrewrite.terraform.aws.EncryptDocumentDB
-  - org.openrewrite.terraform.aws.EnableDynamoDbPITR
-  - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
   - org.openrewrite.terraform.aws.EncryptEBSVolumes
   - org.openrewrite.terraform.aws.EncryptEBSSnapshots
-  - org.openrewrite.terraform.aws.EnableECRScanOnPush
-  - org.openrewrite.terraform.aws.EnsureECRRepositoriesAreEncrypted
+  - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
+  - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
+  - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
+  - org.openrewrite.terraform.aws.EncryptRDSClusters
+  - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
   - org.openrewrite.terraform.aws.EnsureAWSS3ObjectVersioningIsEnabled
+  - org.openrewrite.terraform.aws.EnableDynamoDbPITR
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
-  - org.openrewrite.terraform.aws.EncryptNeptuneStorage
-  - org.openrewrite.terraform.aws.EncryptRDSClusters
-  - org.openrewrite.terraform.aws.EncryptRedshift
-  - org.openrewrite.terraform.aws.ImmutableECRTags
+  - org.openrewrite.terraform.aws.EnableECRScanOnPush
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
-  - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
+  - org.openrewrite.terraform.aws.EncryptNeptuneStorage
+  - org.openrewrite.terraform.aws.EncryptDAXStorage
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
+  - org.openrewrite.terraform.aws.ImmutableECRTags
+  - org.openrewrite.terraform.aws.EncryptRedshift
+  - org.openrewrite.terraform.aws.EncryptDocumentDB
+  - org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
   - org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
+  - org.openrewrite.terraform.aws.EncryptAuroraClusters
+  - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
+  - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
+  - org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
+  - org.openrewrite.terraform.aws.EnableApiGatewayCaching
+  - org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
+  - org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
   - org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
   - org.openrewrite.terraform.aws.EnsureEC2IsEBSOptimized
-  - org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
-  - org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
-  - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
-  - org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
+  - org.openrewrite.terraform.aws.EnsureECRRepositoriesAreEncrypted
+  - org.openrewrite.terraform.aws.EncryptCodeBuild
   - org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
   - org.openrewrite.terraform.aws.EnsureRDSDatabaseHasIAMAuthenticationEnabled
 ---
@@ -69,6 +69,19 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
+      content: 'encrypted = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
+displayName: Encrypt EBS snapshots
+description: EBS snapshots should be encrypted, as they often include sensitive information, customer PII or CPNI.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_4
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ebs_snapshot
       content: 'encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -117,19 +130,6 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
-displayName: Encrypt EBS snapshots
-description: EBS snapshots should be encrypted, as they often include sensitive information, customer PII or CPNI.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_4
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_ebs_snapshot
-      content: 'encrypted = true'
----
-type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
 displayName: Encrypt RDS clusters
 description: Native RDS encryption helps protect your cloud applications and fulfils compliance requirements for data-at-rest encryption.
@@ -143,78 +143,17 @@ recipeList:
       content: 'storage_encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EncryptAuroraClusters
-displayName: Encrypt Aurora clusters
-description: Native Aurora encryption helps protect your cloud applications and fulfils compliance requirements for data-at-rest encryption.
+name: org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
+displayName: Ensure AWS RDS database instance is not publicly accessible
+description: Ensure AWS RDS database instance is not publicly accessible.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_96
+  - CKV_AWS_17 # questionable, todo
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_rds_cluster
-      content: 'storage_encrypted = true'
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
-displayName: Use HTTPS for Cloudfront distribution
-description: Secure communication by default.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_34
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_cloudfront_distribution
-      content: 'viewer_protocol_policy = "https-only"'
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnableDynamoDbPITR
-displayName: Enable point-in-time recovery for DynamoDB
-description: DynamoDB Point-In-Time Recovery (PITR) is an automatic backup service for DynamoDB table data that helps protect your DynamoDB tables from accidental write or delete operations.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_28
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_dynamodb_table
-      content: |-
-        point_in_time_recovery {
-          enabled = true
-        }
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnableECRScanOnPush
-displayName: Scan images pushed to ECR
-description: ECR Image Scanning assesses and identifies operating system vulnerabilities. Using automated image scans you can ensure container image vulnerabilities are found before getting pushed to production.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_33
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_ecr_repository
-      content: |-
-        image_scanning_configuration {
-          scan_on_push = true
-        }
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureECRRepositoriesAreEncrypted
-displayName: Ensure ECR repositories are encrypted
-description: Ensure ECR repositories are encrypted.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_136
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_ecr_repository
-      content: |-
-        encryption_configuration {
-          encryption_type = "KMS"
-        }
+      resourceName: aws_db_instance
+      content: publicly_accessible = false
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
@@ -253,6 +192,22 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableDynamoDbPITR
+displayName: Enable point-in-time recovery for DynamoDB
+description: DynamoDB Point-In-Time Recovery (PITR) is an automatic backup service for DynamoDB table data that helps protect your DynamoDB tables from accidental write or delete operations.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_28
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_dynamodb_table
+      content: |-
+        point_in_time_recovery {
+          enabled = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
 displayName: Encrypt ElastiCache Redis at rest
 description: ElastiCache for Redis offers default encryption at rest as a service.
@@ -279,6 +234,35 @@ recipeList:
       content: 'transit_encryption_enabled = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableECRScanOnPush
+displayName: Scan images pushed to ECR
+description: ECR Image Scanning assesses and identifies operating system vulnerabilities. Using automated image scans you can ensure container image vulnerabilities are found before getting pushed to production.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_33
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_ecr_repository
+      content: |-
+        image_scanning_configuration {
+          scan_on_push = true
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
+displayName: Use HTTPS for Cloudfront distribution
+description: Secure communication by default.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_34
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_cloudfront_distribution
+      content: 'viewer_protocol_policy = "https-only"'
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
 displayName: Encrypt Neptune storage
 description: Encryption of Neptune storage protects data and metadata against unauthorized access.
@@ -303,6 +287,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_dax_cluster
       content: 'server_side_encryption = enabled'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
+displayName: Ensure AWS Lambda functions have tracing enabled
+description: Ensure AWS Lambda functions have tracing enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_50
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_lambda_function
+      content: |-
+        tracing_config {
+          mode = "Active"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.ImmutableECRTags
@@ -344,19 +344,6 @@ recipeList:
       content: 'storage_encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EncryptCodeBuild
-displayName: Encrypt CodeBuild projects
-description: Build artifacts, such as a cache, logs, exported raw test report data files, and build results, are encrypted by default using CMKs for Amazon S3 that are managed by the AWS Key Management Service.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_147
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_codebuild_project
-      content: 'encryption_disabled = false'
----
-type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
 displayName: Disable Instance Metadata Service version 1
 description: As a request/response method IMDSv1 is prone to local misconfigurations.
@@ -374,46 +361,33 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
-displayName: Ensure AWS Lambda functions have tracing enabled
-description: Ensure AWS Lambda functions have tracing enabled.
+name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
+displayName: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled
+description: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_50
+  - CKV_AWS_83
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_lambda_function
+      resourceName: aws_elasticsearch_domain
       content: |-
-        tracing_config {
-          mode = "Active"
+        domain_endpoint_options {
+          enforce_https = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
-displayName: Ensure AWS Lambda function is configured for function-level concurrent execution limit
-description: Ensure AWS Lambda function is configured for function-level concurrent execution limit.
+name: org.openrewrite.terraform.aws.EncryptAuroraClusters
+displayName: Encrypt Aurora clusters
+description: Native Aurora encryption helps protect your cloud applications and fulfils compliance requirements for data-at-rest encryption.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_115
+  - CKV_AWS_96
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_lambda_function
-      content: reserved_concurrent_executions = 0
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnableApiGatewayCaching
-displayName: Enable API gateway caching
-description: Enable caching for all methods of API Gateway.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_120
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_codebuild_project
-      content: 'cache_cluster_enabled = true'
+      resourceName: aws_rds_cluster
+      content: 'storage_encrypted = true'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
@@ -432,20 +406,69 @@ recipeList:
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainsHaveEnforceHTTPSEnabled
-displayName: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled
-description: Ensure AWS Elasticsearch domains have `EnforceHTTPS` enabled.
+name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionIsConfiguredForFunctionLevelConcurrentExecutionLimit
+displayName: Ensure AWS Lambda function is configured for function-level concurrent execution limit
+description: Ensure AWS Lambda function is configured for function-level concurrent execution limit.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_83
+  - CKV_AWS_115
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_elasticsearch_domain
-      content: |-
-        domain_endpoint_options {
-          enforce_https = true
-        }
+      resourceName: aws_lambda_function
+      content: reserved_concurrent_executions = 0
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
+displayName: Ensure enhanced monitoring for Amazon RDS instances is enabled
+description: Ensure enhanced monitoring for Amazon RDS instances is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_118 # questionable, todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      content: monitoring_interval = 5
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnableApiGatewayCaching
+displayName: Enable API gateway caching
+description: Enable caching for all methods of API Gateway.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_120
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_codebuild_project
+      content: 'cache_cluster_enabled = true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
+displayName: Ensure detailed monitoring for EC2 instances is enabled
+description: Ensure detailed monitoring for EC2 instances is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_126
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_instance
+      content: monitoring = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
+displayName: Ensure respective logs of Amazon RDS are enabled
+description: Ensure respective logs of Amazon RDS are enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_129
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      content: enabled_cloudwatch_logs_exports = ["general", "error", "slowquery"]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureVPCSubnetsDoNotAssignPublicIPByDefault
@@ -474,56 +497,33 @@ recipeList:
       content: ebs_optimized = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
-displayName: Ensure detailed monitoring for EC2 instances is enabled
-description: Ensure detailed monitoring for EC2 instances is enabled.
+name: org.openrewrite.terraform.aws.EnsureECRRepositoriesAreEncrypted
+displayName: Ensure ECR repositories are encrypted
+description: Ensure ECR repositories are encrypted.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_126
+  - CKV_AWS_136
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_instance
-      content: monitoring = true
+      resourceName: aws_ecr_repository
+      content: |-
+        encryption_configuration {
+          encryption_type = "KMS"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
-displayName: Ensure enhanced monitoring for Amazon RDS instances is enabled
-description: Ensure enhanced monitoring for Amazon RDS instances is enabled.
+name: org.openrewrite.terraform.aws.EncryptCodeBuild
+displayName: Encrypt CodeBuild projects
+description: Build artifacts, such as a cache, logs, exported raw test report data files, and build results, are encrypted by default using CMKs for Amazon S3 that are managed by the AWS Key Management Service.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_118 # questionable, todo
+  - CKV_AWS_147
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_db_instance
-      content: monitoring_interval = 5
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
-displayName: Ensure AWS RDS database instance is not publicly accessible
-description: Ensure AWS RDS database instance is not publicly accessible.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_17 # questionable, todo
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_db_instance
-      content: publicly_accessible = false
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
-displayName: Ensure respective logs of Amazon RDS are enabled
-description: Ensure respective logs of Amazon RDS are enabled.
-tags:
-  - terraform
-  - AWS
-  - CKV_AWS_129
-recipeList:
-  - org.openrewrite.terraform.AddConfiguration:
-      resourceName: aws_db_instance
-      content: enabled_cloudwatch_logs_exports = ["general", "error", "slowquery"]
+      resourceName: aws_codebuild_project
+      content: 'encryption_disabled = false'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
