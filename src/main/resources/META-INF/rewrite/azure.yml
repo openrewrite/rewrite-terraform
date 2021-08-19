@@ -55,6 +55,7 @@ recipeList:
 #  - org.openrewrite.terraform.azure.EnsureKeyVaultKeyIsBackedByHSM # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureKeyVaultSecretsHaveContentTypeSet
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
+  - org.openrewrite.terraform.azure.EnsureAzureApplicationGatewayHasWAFEnabled
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesInfrastructureEncryption
@@ -533,6 +534,22 @@ recipeList:
           azure_policy {
             enabled = false
           }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAzureApplicationGatewayHasWAFEnabled
+displayName: Ensure Azure application gateway has WAF enabled
+description: Ensure Azure application gateway has WAF enabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_120
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_application_gateway
+      content: |-
+        waf_configuration {
+          enabled = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
