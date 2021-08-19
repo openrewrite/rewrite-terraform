@@ -48,6 +48,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
+  - org.openrewrite.terraform.azure.EnsureAppServiceEnablesDetailedErrorMessages
   - org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
@@ -443,6 +444,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_mysql_server
       content: ssl_minimal_tls_version_enforced = TLS1_2
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAppServiceEnablesDetailedErrorMessages
+displayName: Ensure app service enables detailed error messages
+description: Ensure app service enables detailed error messages.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_65
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        logs {
+          detailed_error_messages_enabled = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
