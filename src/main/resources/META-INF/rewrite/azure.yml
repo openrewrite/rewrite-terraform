@@ -38,6 +38,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureAzurePostgreSQLDatabaseServerWithSSLConnectionIsEnabled
   - org.openrewrite.terraform.azure.SetAzureStorageAccountDefaultNetworkAccessToDeny
   - org.openrewrite.terraform.azure.EnableAzureStorageAccountTrustedMicrosoftServicesAccess
+  - org.openrewrite.terraform.azure.EnsureActivityLogRetentionIsSetTo365DaysOrGreater
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
@@ -283,6 +284,23 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account_network_rules
       content: 'bypass = ["AzureServices"]'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureActivityLogRetentionIsSetTo365DaysOrGreater
+displayName: Ensure activity log retention is set to 365 days or greater
+description: Ensure activity log retention is set to 365 days or greater.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_37
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_monitor_log_profile
+      content: |-
+        retention_policy {
+          enabled = true
+          days = 365
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
