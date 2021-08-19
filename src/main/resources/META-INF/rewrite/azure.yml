@@ -49,6 +49,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
+  - org.openrewrite.terraform.azure.EnsureKeyVaultAllowsFirewallRulesSettings
 #  - org.openrewrite.terraform.azure.EnsureKeyVaultKeyIsBackedByHSM # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureKeyVaultSecretsHaveContentTypeSet
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
@@ -441,6 +442,23 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: geo_redundant_backup_enabled = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureKeyVaultAllowsFirewallRulesSettings
+displayName: Ensure key vault allows firewall rules settings
+description: Ensure key vault allows firewall rules settings.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_109
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_key_vault
+      content: |-
+        network_acls {
+          default_action = "Deny"
+          bypass = "AzureServices"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureKeyVaultKeyIsBackedByHSM
