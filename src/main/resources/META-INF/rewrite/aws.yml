@@ -56,6 +56,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
   - org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
+  - org.openrewrite.terraform.aws.EnsureRDSDatabaseHasIAMAuthenticationEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -536,3 +537,16 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
       content: multi_az = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureRDSDatabaseHasIAMAuthenticationEnabled
+displayName: Ensure RDS database has IAM authentication enabled
+description: Ensure RDS database has IAM authentication enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_161
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      content: iam_database_authentication_enabled = true
