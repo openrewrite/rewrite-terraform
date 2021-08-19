@@ -27,6 +27,7 @@ recipeList:
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
   - org.openrewrite.terraform.azure.EnsureAzureAppServiceWebAppRedirectsHTTPToHTTPS
+  - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfTLSEncryption
 #  - org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
   - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
@@ -141,6 +142,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_app_service
       content: https_only = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfTLSEncryption
+displayName: Ensure Web App uses the latest version of TLS encryption
+description: Ensure Web App uses the latest version of TLS encryption.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_15
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        site_config {
+          min_tls_version = "1.2"
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureWebAppHasIncomingClientCertificatesEnabled
@@ -433,7 +450,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_storage_account
-      content: 'min_tls_version = TLS1_2'
+      content: min_tls_version = "TLS1_2"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
