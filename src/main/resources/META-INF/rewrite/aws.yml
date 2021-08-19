@@ -183,6 +183,7 @@ recipeList:
       resourceName: aws_iam_account_password_policy
       content: minimum_password_length = 14
 ---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneLowercaseLetter
 displayName: Ensure IAM password policy requires at least one lowercase letter
 description: Ensure IAM password policy requires at least one lowercase letter.
@@ -195,6 +196,7 @@ recipeList:
       resourceName: aws_iam_account_password_policy
       content: require_lowercase_characters = true
 ---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneNumber
 displayName: Ensure IAM password policy requires at least one number
 description: Ensure IAM password policy requires at least one number.
@@ -207,6 +209,7 @@ recipeList:
       resourceName: aws_iam_account_password_policy
       content: require_numbers = true
 ---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyPreventsPasswordReuse
 displayName: Ensure IAM password policy prevents password reuse
 description: Ensure IAM password policy prevents password reuse.
@@ -219,6 +222,7 @@ recipeList:
       resourceName: aws_iam_account_password_policy
       content: password_reuse_prevention = 24
 ---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneSymbol
 displayName: Ensure IAM password policy requires at least one symbol
 description: Ensure IAM password policy requires at least one symbol.
@@ -231,6 +235,7 @@ recipeList:
       resourceName: aws_iam_account_password_policy
       content: require_symbols = true
 ---
+type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneUppercaseLetter
 displayName: Ensure IAM password policy requires at least one uppercase letter
 description: Ensure IAM password policy requires at least one uppercase letter.
