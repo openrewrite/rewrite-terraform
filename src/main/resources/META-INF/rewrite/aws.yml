@@ -44,6 +44,7 @@ recipeList:
   - org.openrewrite.terraform.aws.ImmutableECRTags
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
   - org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
+  - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -313,6 +314,22 @@ recipeList:
         metadata_options {
           http_endpoint = "enabled"
           http_tokens   = "required"
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
+displayName: Ensure AWS Lambda functions have tracing enabled
+description: Ensure AWS Lambda functions have tracing enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_50
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_lambda_function
+      content: |-
+        tracing_config {
+          mode = "Active"
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
