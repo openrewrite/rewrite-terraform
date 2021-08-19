@@ -29,6 +29,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSCMKRotationIsEnabled
   - org.openrewrite.terraform.aws.EncryptEBSVolumeLaunchConfiguration
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyExpiresPasswordsWithin90DaysOrLess
+  - org.openrewrite.terraform.aws.EnsureAWSIAMPasswordPolicyHasAMinimumOf14Characters
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
@@ -159,6 +160,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_iam_account_password_policy
       content: max_password_age = 90
+---
+type: specs.openrewrite.org/v1beta/recipe
+# note, as with other recipes here, this needs to be able to check whether the current value is in compliance
+# with the stated policy; for the time being, we only care about whether a "minimum_password_length" is defined at all.
+# todo
+name: org.openrewrite.terraform.aws.EnsureAWSIAMPasswordPolicyHasAMinimumOf14Characters
+displayName: Ensure AWS IAM password policy has a minimum of 14 characters
+description: Ensure AWS IAM password policy has a minimum of 14 characters.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_10
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_iam_account_password_policy
+      content: minimum_password_length = 14
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
