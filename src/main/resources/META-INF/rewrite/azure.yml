@@ -26,6 +26,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
   - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
+  - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
   - org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
   - org.openrewrite.terraform.azure.EnsureASecurityContactPhoneNumberIsPresent
   - org.openrewrite.terraform.azure.EnsureSendEmailNotificationForHighSeverityAlertsIsEnabled
@@ -120,6 +121,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_network_watcher_flow_log
       content: days = 90
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfHTTP
+displayName: Ensure Web App uses the latest version of HTTP
+description: Ensure Web App uses the latest version of HTTP.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_18
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        site_config {
+          http2_enabled = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureStandardPricingTierIsSelected
