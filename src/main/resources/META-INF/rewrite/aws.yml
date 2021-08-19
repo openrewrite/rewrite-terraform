@@ -32,6 +32,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAWSIAMPasswordPolicyHasAMinimumOf14Characters
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneLowercaseLetter
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneNumber
+  - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyPreventsPasswordReuse
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
@@ -202,6 +203,18 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_iam_account_password_policy
       content: require_numbers = true
+---
+name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyPreventsPasswordReuse
+displayName: Ensure IAM password policy prevents password reuse
+description: Ensure IAM password policy prevents password reuse.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_13
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_iam_account_password_policy
+      content: password_reuse_prevention = 24
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
