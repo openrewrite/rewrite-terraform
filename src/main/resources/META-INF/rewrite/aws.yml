@@ -31,6 +31,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyExpiresPasswordsWithin90DaysOrLess
   - org.openrewrite.terraform.aws.EnsureAWSIAMPasswordPolicyHasAMinimumOf14Characters
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneLowercaseLetter
+  - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneNumber
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
@@ -184,11 +185,23 @@ description: Ensure IAM password policy requires at least one lowercase letter.
 tags:
   - terraform
   - AWS
-  - CKV_AWS_10
+  - CKV_AWS_11
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_iam_account_password_policy
       content: require_lowercase_characters = true
+---
+name: org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneNumber
+displayName: Ensure IAM password policy requires at least one number
+description: Ensure IAM password policy requires at least one number.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_12
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_iam_account_password_policy
+      content: require_numbers = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRDSClusters
