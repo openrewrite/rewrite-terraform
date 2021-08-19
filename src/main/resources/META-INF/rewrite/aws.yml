@@ -69,7 +69,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_volume
-      content: 'encrypted = true'
+      content: encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSSnapshots
@@ -82,7 +82,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_ebs_snapshot
-      content: 'encrypted = true'
+      content: encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureAWSElasticsearchDomainEncryptionForDataAtRestIsEnabled
@@ -140,7 +140,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
-      content: 'storage_encrypted = true'
+      content: storage_encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
@@ -218,7 +218,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_elasticache_replication_group
-      content: 'at_rest_encryption_enabled = true'
+      content: at_rest_encryption_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
@@ -231,7 +231,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_elasticache_replication_group
-      content: 'transit_encryption_enabled = true'
+      content: transit_encryption_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnableECRScanOnPush
@@ -260,7 +260,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_cloudfront_distribution
-      content: 'viewer_protocol_policy = "https-only"'
+      content: viewer_protocol_policy = "https-only"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
@@ -273,7 +273,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_neptune_cluster
-      content: 'storage_encrypted = true'
+      content: storage_encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptDAXStorage
@@ -286,7 +286,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_dax_cluster
-      content: 'server_side_encryption = enabled'
+      content: server_side_encryption = enabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
@@ -315,7 +315,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_neptune_cluster
-      content: 'image_tag_mutability = "IMMUTABLE"'
+      content: image_tag_mutability = "IMMUTABLE"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptRedshift
@@ -328,7 +328,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_redshift_cluster
-      content: 'encrypted = true'
+      content: encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptDocumentDB
@@ -341,7 +341,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_docdb_cluster
-      content: 'storage_encrypted = true'
+      content: storage_encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.DisableInstanceMetadataServiceV1
@@ -387,7 +387,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_rds_cluster
-      content: 'storage_encrypted = true'
+      content: storage_encrypted = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEFSVolumesInECSTaskDefinitionsInTransit
@@ -442,7 +442,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_codebuild_project
-      content: 'cache_cluster_enabled = true'
+      content: cache_cluster_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureDetailedMonitoringForEC2InstancesIsEnabled
@@ -523,7 +523,7 @@ tags:
 recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_codebuild_project
-      content: 'encryption_disabled = false'
+      content: encryption_disabled = false
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
