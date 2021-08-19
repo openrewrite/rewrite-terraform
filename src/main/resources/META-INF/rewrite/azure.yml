@@ -25,6 +25,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EncryptAzureVMDataDiskWithADECMK
   - org.openrewrite.terraform.azure.EnableAzureStorageSecureTransferRequired
   - org.openrewrite.terraform.azure.DisableKubernetesDashboard
+  - org.openrewrite.terraform.azure.EnsureTheStorageContainerStoringActivityLogsIsNotPubliclyAccessible
   - org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
   - org.openrewrite.terraform.azure.EnsureAzureAppServiceWebAppRedirectsHTTPToHTTPS
   - org.openrewrite.terraform.azure.EnsureWebAppUsesTheLatestVersionOfTLSEncryption
@@ -116,6 +117,19 @@ recipeList:
             enabled = false
           }
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureTheStorageContainerStoringActivityLogsIsNotPubliclyAccessible
+displayName: Ensure the storage container storing activity logs is not publicly accessible
+description: Ensure the storage container storing activity logs is not publicly accessible.
+tags:
+  - terraform
+  - Azure
+  - CKV2_AZURE_8
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_storage_container
+      content: container_access_type = "private"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAzureNetworkWatcherNSGFlowLogsRetentionIsGreaterThan90Days
