@@ -46,6 +46,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureStorageAccountUsesLatestTLSVersion
   - org.openrewrite.terraform.azure.EnsurePublicNetworkAccessEnabledIsSetToFalseForMySQLServers
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
+  - org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
@@ -409,6 +410,22 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_mysql_server
       content: ssl_minimal_tls_version_enforced = TLS1_2
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
+displayName: Ensure app service enables failed request tracing
+description: Ensure app service enables failed request tracing.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_66
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: |-
+        logs {
+          failed_request_tracing_enabled = true
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
