@@ -37,6 +37,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureIAMPasswordPolicyRequiresAtLeastOneUppercaseLetter
   - org.openrewrite.terraform.aws.EncryptRDSClusters
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
+  - org.openrewrite.terraform.aws.EnsureTheS3BucketHasAccessLoggingEnabled
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
   - org.openrewrite.terraform.aws.EnsureAWSS3ObjectVersioningIsEnabled
   - org.openrewrite.terraform.aws.EnableDynamoDbPITR
@@ -267,6 +268,23 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
       content: publicly_accessible = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureTheS3BucketHasAccessLoggingEnabled
+displayName: Ensure the S3 bucket has access logging enabled
+description: Ensure the S3 bucket has access logging enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_18 # handling of variable names, for the moment leaving it as content to be filled-in by users, todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_s3_bucket
+      content: |-
+        logging {
+          target_bucket = var.target_bucket \#todo
+          target_prefix = "log/${var.s3_bucket_name}" \#todo
+        }
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
