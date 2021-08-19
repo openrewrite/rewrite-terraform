@@ -47,6 +47,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
+  - org.openrewrite.terraform.azure.EnsureKeyVaultSecretsHaveContentTypeSet
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesThreatDetectionPolicy
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerEnablesThreatDetectionPolicy
@@ -411,6 +412,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: geo_redundant_backup_enabled = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureKeyVaultSecretsHaveContentTypeSet
+displayName: Ensure key vault secrets have `content_type` set
+description: Ensure key vault secrets have `content_type` set.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_114
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_key_vault
+      content: content_type = "text/plain"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
