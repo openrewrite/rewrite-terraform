@@ -49,6 +49,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureMySQLIsUsingTheLatestVersionOfTLSEncryption
   - org.openrewrite.terraform.azure.EnsureAppServiceEnablesFailedRequestTracing
   - org.openrewrite.terraform.azure.EnsurePostgreSQLServerDisablesPublicNetworkAccess
+  - org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
   - org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
@@ -456,6 +457,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: azurerm_postgresql_server
       content: public_network_access_enabled = false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureFTPDeploymentsAreDisabled
+displayName: Ensure FTP Deployments are disabled
+description: Ensure FTP Deployments are disabled.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_78 # should be able to tell if FTP is being used, then set to FtpsOnly; otherwise, disable. Leaving as disable for now. todo
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_app_service
+      content: ftps_state = "Disabled"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureMySQLServerDisablesPublicNetworkAccess
