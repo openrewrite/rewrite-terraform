@@ -34,6 +34,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptEBSSnapshots
   - org.openrewrite.terraform.aws.EnableECRScanOnPush
   - org.openrewrite.terraform.aws.EnsureDataStoredInAnS3BucketIsSecurelyEncryptedAtRest
+  - org.openrewrite.terraform.aws.EnsureAWSS3ObjectVersioningIsEnabled
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisAtRest
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
@@ -166,6 +167,22 @@ recipeList:
               sse_algorithm = "AES256"
             }
           }
+        }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureAWSS3ObjectVersioningIsEnabled
+displayName: Ensure AWS S3 object versioning is enabled
+description: Ensure AWS S3 object versioning is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_21
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_s3_bucket
+      content: |-
+        versioning {
+          enabled = true
         }
 ---
 type: specs.openrewrite.org/v1beta/recipe
