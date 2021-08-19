@@ -50,6 +50,7 @@ recipeList:
   - org.openrewrite.terraform.azure.EnsureMySQLServerEnablesGeoRedundantBackups
   - org.openrewrite.terraform.azure.EnableGeoRedundantBackupsOnPostgreSQLServer
   - org.openrewrite.terraform.azure.EnsureKeyVaultAllowsFirewallRulesSettings
+  - org.openrewrite.terraform.azure.EnsureKeyVaultEnablesPurgeProtection
 #  - org.openrewrite.terraform.azure.EnsureKeyVaultKeyIsBackedByHSM # leaving out of default pool, unsure, todo
   - org.openrewrite.terraform.azure.EnsureKeyVaultSecretsHaveContentTypeSet
   - org.openrewrite.terraform.azure.EnsureAKSPoliciesAddOn
@@ -459,6 +460,19 @@ recipeList:
           default_action = "Deny"
           bypass = "AzureServices"
         }
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.azure.EnsureKeyVaultEnablesPurgeProtection
+displayName: Ensure key vault enables purge protection
+description: Ensure key vault enables purge protection.
+tags:
+  - terraform
+  - Azure
+  - CKV_AZURE_110
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: azurerm_key_vault
+      content: purge_protection_enabled = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.azure.EnsureKeyVaultKeyIsBackedByHSM
