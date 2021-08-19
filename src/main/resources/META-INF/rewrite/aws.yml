@@ -45,6 +45,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EncryptElastiCacheRedisInTransit
   - org.openrewrite.terraform.aws.EnableECRScanOnPush
   - org.openrewrite.terraform.aws.UseHttpsForCloudfrontDistribution
+  - org.openrewrite.terraform.aws.EnsureCloudTrailLogFileValidationIsEnabled
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
   - org.openrewrite.terraform.aws.EncryptDAXStorage
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
@@ -397,6 +398,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_cloudfront_distribution
       content: viewer_protocol_policy = "https-only"
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureCloudTrailLogFileValidationIsEnabled
+displayName: Ensure CloudTrail log file validation is enabled
+description: Ensure CloudTrail log file validation is enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_36
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_cloudtrail
+      content: enable_log_file_validation = true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
