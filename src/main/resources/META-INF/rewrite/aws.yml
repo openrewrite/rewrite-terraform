@@ -49,6 +49,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureAmazonEKSControlPlaneLoggingEnabledForAllLogTypes
   - org.openrewrite.terraform.aws.EnsureAWSEKSClusterEndpointAccessIsPubliclyDisabled
   - org.openrewrite.terraform.aws.EnsureAWSEFSWithEncryptionForDataAtRestIsEnabled
+  - org.openrewrite.terraform.aws.EnsureKinesisStreamIsSecurelyEncrypted
   - org.openrewrite.terraform.aws.EncryptNeptuneStorage
   - org.openrewrite.terraform.aws.EncryptDAXStorage
   - org.openrewrite.terraform.aws.EnsureAWSLambdaFunctionsHaveTracingEnabled
@@ -456,6 +457,19 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_efs_file_system
       content: encrypted = true
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureKinesisStreamIsSecurelyEncrypted
+displayName: Ensure Kinesis Stream is securely encrypted
+description: Ensure Kinesis Stream is securely encrypted.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_43
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_kinesis_stream
+      content: encryption_type = "KMS"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptNeptuneStorage
