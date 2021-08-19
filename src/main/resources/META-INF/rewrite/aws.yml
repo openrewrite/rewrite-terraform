@@ -55,6 +55,7 @@ recipeList:
   - org.openrewrite.terraform.aws.EnsureEnhancedMonitoringForAmazonRDSInstancesIsEnabled
   - org.openrewrite.terraform.aws.EnsureAWSRDSDatabaseInstanceIsNotPubliclyAccessible
   - org.openrewrite.terraform.aws.EnsureRespectiveLogsOfAmazonRDSAreEnabled
+  - org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.aws.EncryptEBSVolumes
@@ -522,3 +523,16 @@ recipeList:
   - org.openrewrite.terraform.AddConfiguration:
       resourceName: aws_db_instance
       content: enabled_cloudwatch_logs_exports = ["general", "error", "slowquery"]
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.terraform.aws.EnsureRDSInstancesHaveMultiAZEnabled
+displayName: Ensure RDS instances have Multi-AZ enabled
+description: Ensure RDS instances have Multi-AZ enabled.
+tags:
+  - terraform
+  - AWS
+  - CKV_AWS_157
+recipeList:
+  - org.openrewrite.terraform.AddConfiguration:
+      resourceName: aws_db_instance
+      content: multi_az = true
