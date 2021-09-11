@@ -37,7 +37,7 @@ class AddConfigurationTest : HclRecipeTest {
               # leave this one alone
               encrypted = false
             }
-        """.trimIndent(),
+        """,
         after = """
             resource "aws_ebs_volume" {
               size      = 1
@@ -48,7 +48,7 @@ class AddConfigurationTest : HclRecipeTest {
               # leave this one alone
               encrypted = false
             }
-        """.trimIndent()
+        """
     )
 
     @Test
@@ -65,7 +65,7 @@ class AddConfigurationTest : HclRecipeTest {
             resource "aws_dynamodb_table" {
               name = "GameScores"
             }
-        """.trimIndent(),
+        """,
         after = """
             resource "aws_dynamodb_table" {
               name = "GameScores"
@@ -73,6 +73,6 @@ class AddConfigurationTest : HclRecipeTest {
                 enabled = true
               }
             }
-        """.trimIndent()
+        """
     )
 }

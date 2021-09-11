@@ -13,9 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@NonNullApi
-@NonNullFields
-package org.openrewrite.terraform.aws;
+package org.openrewrite.terraform
 
-import org.openrewrite.internal.lang.NonNullApi;
-import org.openrewrite.internal.lang.NonNullFields;
+import org.junit.jupiter.api.Test
+import org.openrewrite.hcl.HclRecipeTest
+
+class SecureRandomTest : HclRecipeTest {
+
+    @Test
+    fun secureRandom() = assertChanged(
+        recipe = SecureRandom(20),
+        before = """
+            resource "random_id" "random" {
+              byte_length = 11
+            }
+        """,
+        after = """
+            resource "random_id" "random" {
+              byte_length = 20
+            }
+        """
+    )
+}
