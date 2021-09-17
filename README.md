@@ -8,3 +8,7 @@
 ### What is this?
 
 This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that performs common tasks when managing Terraform scripts.
+
+### Example
+
+For an example of how to run a Terraform recipe offline, see the [example](https://github.com/openrewrite/rewrite-terraform/blob/main/src/test/kotlin/org/openrewrite/terraform/Example.java).
