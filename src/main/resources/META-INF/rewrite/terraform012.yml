@@ -22,3 +22,4 @@ tags:
   - terraform
 recipeList:
   - org.openrewrite.terraform.terraform012.UseFirstClassExpressions
+  - org.openrewrite.terraform.terraform012.UseUpdatedVariableTypes
