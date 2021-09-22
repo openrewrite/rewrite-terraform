@@ -21,11 +21,8 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.hcl.HclVisitor;
-import org.openrewrite.hcl.marker.HclSearchResult;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.terraform.TerraformResource;
-
-import static org.openrewrite.Tree.randomId;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -53,8 +50,7 @@ public class FindResource extends Recipe {
                 Hcl.Block b = block;
 
                 if (TerraformResource.isResource(b, resourceName)) {
-                    b = b.withMarkers(block.getMarkers().addIfAbsent(new HclSearchResult(randomId(),
-                            FindResource.this)));
+                    b = b.withMarkers(block.getMarkers().searchResult());
                 }
 
                 // resources will only ever be found at the top level of a config file
