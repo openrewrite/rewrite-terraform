@@ -18,7 +18,7 @@ package org.openrewrite.terraform;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.hcl.tree.Label;
 
-public class TerraformResource {
+public final class TerraformResource {
     private TerraformResource() {
     }
 
