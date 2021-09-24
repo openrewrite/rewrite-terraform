@@ -74,12 +74,12 @@ public class AddConfiguration extends Recipe {
                     }
 
                     for (int i = 0; i < body.size() - 1; i++) {
-                        BodyContent content = body.get(i);
-                        if (content instanceof Hcl.Attribute && ((Hcl.Attribute) content).getSimpleName().equals(contentName)) {
+                        BodyContent content1 = body.get(i);
+                        if (content1 instanceof Hcl.Attribute && ((Hcl.Attribute) content1).getSimpleName().equals(contentName)) {
                             // discard the in-progress change and return
                             return block;
-                        } else if (content instanceof Hcl.Block) {
-                            Hcl.Block siblingBlock = (Hcl.Block) content;
+                        } else if (content1 instanceof Hcl.Block) {
+                            Hcl.Block siblingBlock = (Hcl.Block) content1;
                             if (siblingBlock.getType() != null && siblingBlock.getType().getName().equals(contentName)) {
                                 return block;
                             }
