@@ -26,21 +26,29 @@ class FindResourceTest : HclRecipeTest {
     @Test
     fun findResource() = assertChanged(
         before = """
+            variable "aws_ebs_volume" {
+              default = "somewhat_convoluted_naming_example"
+            }
+
             resource "aws_ebs_volume" {
               size      = 1
               encrypted = true
             }
-            
+
             resource "azure_storage_volume" {
               size = 1
             }
         """.trimIndent(),
         after = """
+            variable "aws_ebs_volume" {
+              default = "somewhat_convoluted_naming_example"
+            }
+
             /*~~>*/resource "aws_ebs_volume" {
               size      = 1
               encrypted = true
             }
-            
+
             resource "azure_storage_volume" {
               size = 1
             }

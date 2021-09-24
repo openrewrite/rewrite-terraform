@@ -23,11 +23,13 @@ public final class TerraformResource {
     }
 
     public static boolean isResource(Hcl.Block block, String resourceName) {
-        for (Label label : block.getLabels()) {
-            if (label instanceof Hcl.Identifier) {
-                return ((Hcl.Identifier) label).getName().equals(resourceName);
-            } else if (label instanceof Hcl.Literal) {
-                return ((Hcl.Literal) label).getValue().toString().equals(resourceName);
+        if (block.getType() != null && block.getType().getName().equals("resource")) {
+            for (Label label : block.getLabels()) {
+                if (label instanceof Hcl.Identifier) {
+                    return ((Hcl.Identifier) label).getName().equals(resourceName);
+                } else if (label instanceof Hcl.Literal) {
+                    return ((Hcl.Literal) label).getValue().toString().equals(resourceName);
+                }
             }
         }
         return false;
