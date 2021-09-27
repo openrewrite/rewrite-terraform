@@ -111,4 +111,113 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
         """
     )
 
+    @Test
+    @Disabled
+    fun arithmetic() = assertChanged(
+        before = """
+            locals {
+              add             = "${'$'}{1 + 2}"
+              sub             = "${'$'}{1 - 2}"
+              mul             = "${'$'}{1 * 2}"
+              mod             = "${'$'}{4 % 2}"
+              and             = "${'$'}{true && true}"
+              or              = "${'$'}{true || true}"
+              equal           = "${'$'}{1 == 2}"
+              not_equal       = "${'$'}{1 != 2}"
+              less_than       = "${'$'}{1 < 2}"
+              greater_than    = "${'$'}{1 > 2}"
+              less_than_eq    = "${'$'}{1 <= 2}"
+              greater_than_eq = "${'$'}{1 >= 2}"
+              neg             = "${'$'}{-local.add}"
+            }
+        """,
+        after = """
+            locals {
+              add             = 1 + 2
+              sub             = 1 - 2
+              mul             = 1 * 2
+              mod             = 4 % 2
+              and             = true && true
+              or              = true || true
+              equal           = 1 == 2
+              not_equal       = 1 != 2
+              less_than       = 1 < 2
+              greater_than    = 1 > 2
+              less_than_eq    = 1 <= 2
+              greater_than_eq = 1 >= 2
+              neg             = -local.add
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun methodCalls() = assertChanged(
+        before = """
+            locals {
+              call_no_args  = "${'$'}{foo()}"
+              call_one_arg  = "${'$'}{foo(1)}"
+              call_two_args = "${'$'}{foo(1, 2)}"
+            }
+        """,
+        after = """
+            locals {
+              call_no_args  = foo()
+              call_one_arg  = foo(1)
+              call_two_args = foo(1, 2)
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun conditionals() = assertChanged(
+        before = """
+            locals {
+              cond = "${'$'}{true ? 1 : 2}"
+            }
+        """,
+        after = """
+            locals {
+              cond = true ? 1 : 2
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun indexes() = assertChanged(
+        before = """
+            locals {
+              index_str = "${'$'}{foo[\"a\"]}"
+              index_num = "${'$'}{foo[1]}"
+            }
+        """,
+        after = """
+            locals {
+              index_str = foo["a"]
+              index_num = foo[1]
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun variableAccess() = assertChanged(
+        before = """
+            locals {
+              var_access_single = "${'$'}{foo}"
+              var_access_dot    = "${'$'}{foo.bar}"
+              var_access_splat  = "${'$'}{foo.bar.*.baz}"
+            }
+        """,
+        after = """
+            locals {
+              var_access_single = foo
+              var_access_dot    = foo.bar
+              var_access_splat  = foo.bar.*.baz
+            }
+        """
+    )
+
 }
