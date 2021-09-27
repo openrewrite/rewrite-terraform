@@ -112,7 +112,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun arithmetic() = assertChanged(
         before = """
             locals {
@@ -151,7 +150,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun methodCalls() = assertChanged(
         before = """
             locals {
@@ -170,7 +168,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun conditionals() = assertChanged(
         before = """
             locals {
@@ -202,7 +199,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun variableAccess() = assertChanged(
         before = """
             locals {
