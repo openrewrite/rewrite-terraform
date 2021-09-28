@@ -181,4 +181,71 @@ class UseUpdatedBlockSyntaxTest : HclRecipeTest {
         """
     )
 
+    @Test
+    @Disabled
+    @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/list-of-obj-as-block")
+    fun listOfObjectsAsBlock() = assertChanged(
+        before = """
+            resource "test_instance" "from_list" {
+              list_of_obj = [
+                {},
+                {},
+              ]
+            }
+
+            resource "test_instance" "already_blocks" {
+              list_of_obj {}
+              list_of_obj {}
+            }
+
+            resource "test_instance" "empty" {
+              list_of_obj = []
+            }
+        """,
+        after = """
+            resource "test_instance" "from_list" {
+              list_of_obj {
+              }
+              list_of_obj {
+              }
+            }
+
+            resource "test_instance" "already_blocks" {
+              list_of_obj {
+              }
+              list_of_obj {
+              }
+            }
+
+            resource "test_instance" "empty" {
+              list_of_obj = []
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/map-attr-as-block")
+    fun mapAttributeAsBlock() = assertChanged(
+        before = """
+            resource "test_instance" "foo" {
+              type  = "z1.weedy"
+              image = "image-abcd"
+              tags {
+                name = "boop"
+              }
+            }
+        """,
+        after = """
+            resource "test_instance" "foo" {
+              type  = "z1.weedy"
+              image = "image-abcd"
+              tags = {
+                name = "boop"
+              }
+            }
+        """
+    )
+
+
 }
