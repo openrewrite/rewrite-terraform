@@ -23,19 +23,13 @@ import org.openrewrite.hcl.HclRecipeTest
 
 @Suppress("RemoveCurlyBracesFromTemplate")
 @Issue("https://github.com/openrewrite/rewrite-terraform/issues/6")
-class UseFirstClassExpressionsTest : HclRecipeTest {
+class UpgradeExpressionsTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseFirstClassExpressions()
+        get() = UpgradeExpressions()
 
     @Test
     fun removeCurlyBracesFromTemplate() = assertChanged(
         before = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                     = "${'$'}{var.ami}"
               instance_type           = "${'$'}{var.instance_type}"
@@ -44,12 +38,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
             }
         """,
         after = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                     = var.ami
               instance_type           = var.instance_type
@@ -60,14 +48,35 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
+    fun updateQuotedTemplateWhenValueIsOnlyExpression() = assertChanged(
+        before = """
+            resource "aws_instance" "example" {
+              ami                     = "${'$'}{var.ami}"
+              instance_type           = "${'$'}{var.instance_type}"
+            }
+        """,
+        after = """
+            resource "aws_instance" "example" {
+              ami                     = var.ami
+              instance_type           = var.instance_type
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun doNotUpdateQuotedTemplateWhenContainsLiteralValues() = assertUnchanged(
+        before = """
+            resource "aws_instance" "example" {
+              ami                     = "before ${'$'}{var.ami}"
+              instance_type           = "${'$'}{var.instance_type} after"
+            }
+        """
+    )
+
+    @Test
     fun doNotChangeExistingUpdatedExpressionSyntax() = assertUnchanged(
         before = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                    = var.ami
               instance_type          = var.instance_type
@@ -79,34 +88,46 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
 
     @Test
     @Disabled
-    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/7")
-    fun removeCurlyBracesFromFunctions() = assertChanged(
+    @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/nested-exprs-in-hcl")
+    fun nestedExpressions() = assertChanged(
         before = """
-            tags = "${'$'}{merge(map("Name", "example"), var.common_tags)}"
-        """,
-        after = """
-            tags = merge({ Name = "example" }, var.common_tags)
-        """
-    )
-
-    @Test
-    @Disabled
-    fun expressionsWithListsAndMaps() = assertChanged(
-        before = """
-            resource "aws_instance" "example" {
-              # The following works because the list structure is static
-              vpc_security_group_ids = ["${'$'}{var.security_group_1}", "${'$'}{var.security_group_2}"]
-
-              # The following doesn't work, because the [...] syntax isn't known to the interpolation language
-              vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? [var.security_group_id] : []}"
-
-              # Instead, it's necessary to use the list() function
-              vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? list(var.security_group_id) : list()}"
+            locals {
+              in_map = {
+                foo = "${'$'}{var.baz}"
+              }
+              in_list = [
+                "${'$'}{var.baz}",
+                "${'$'}{var.bar}",
+              ]
+              in_list_one_line = ["${'$'}{var.baz}", "${'$'}{var.bar}"]
+              in_map_of_list = {
+                foo = ["${'$'}{var.baz}"]
+              }
+              in_list_of_map = [
+                {
+                  foo = "${'$'}{var.baz}"
+                }
+              ]
             }
         """,
         after = """
-            resource "aws_instance" "example" {
-              vpc_security_group_ids = var.security_group_id != "" ? [var.security_group_id] : []
+            locals {
+              in_map = {
+                foo = var.baz
+              }
+              in_list = [
+                var.baz,
+                var.bar,
+              ]
+              in_list_one_line = [var.baz, var.bar]
+              in_map_of_list = {
+                foo = [var.baz]
+              }
+              in_list_of_map = [
+                {
+                  foo = var.baz
+                },
+              ]
             }
         """
     )
@@ -182,11 +203,10 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun indexes() = assertChanged(
         before = """
             locals {
-              index_str = "${'$'}{foo[\"a\"]}"
+              index_str = "${'$'}{foo["a"]}"
               index_num = "${'$'}{foo[1]}"
             }
         """,

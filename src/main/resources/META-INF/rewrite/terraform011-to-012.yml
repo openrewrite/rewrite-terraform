@@ -17,9 +17,10 @@
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.terraform.terraform012.UpgradeTerraform_0_12
 displayName: Upgrade to Terraform 0.12.+
-description: Upgrade to Terraform 0.12.+ from Terraform 0.11.latest.
+description: Applies changes commonly needed when upgrading from Terraform 0.11.latest to Terraform 0.12.+.
 tags:
   - terraform
+  - deprecated
 recipeList:
-  - org.openrewrite.terraform.terraform012.UseFirstClassExpressions
+  - org.openrewrite.terraform.terraform012.UpgradeExpressions
   - org.openrewrite.terraform.terraform012.UseUpdatedVariableTypes
