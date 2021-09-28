@@ -32,6 +32,17 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
 
     @Test
     @Disabled
+    fun removeCurlyBracesFromFunctions() = assertChanged(
+        before = """
+            tags = "${'$'}{merge(map("Name", "example"), var.common_tags)}"
+        """,
+        after = """
+            tags = merge({ Name = "example" }, var.common_tags)
+        """
+    )
+
+    @Test
+    @Disabled
     fun useUpdatedFunctions() = assertChanged(
         before = """
             locals {

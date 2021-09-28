@@ -79,13 +79,47 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
 
     @Test
     @Disabled
-    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/7")
-    fun removeCurlyBracesFromFunctions() = assertChanged(
+    @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/nested-exprs-in-hcl")
+    fun nestedExpressions() = assertChanged(
         before = """
-            tags = "${'$'}{merge(map("Name", "example"), var.common_tags)}"
+            locals {
+              in_map = {
+                foo = "${'$'}{var.baz}"
+              }
+              in_list = [
+                "${'$'}{var.baz}",
+                "${'$'}{var.bar}",
+              ]
+              in_list_one_line = ["${'$'}{var.baz}", "${'$'}{var.bar}"]
+              in_map_of_list = {
+                foo = ["${'$'}{var.baz}"]
+              }
+              in_list_of_map = [
+                {
+                  foo = "${'$'}{var.baz}"
+                }
+              ]
+            }
         """,
         after = """
-            tags = merge({ Name = "example" }, var.common_tags)
+            locals {
+              in_map = {
+                foo = var.baz
+              }
+              in_list = [
+                var.baz,
+                var.bar,
+              ]
+              in_list_one_line = [var.baz, var.bar]
+              in_map_of_list = {
+                foo = [var.baz]
+              }
+              in_list_of_map = [
+                {
+                  foo = var.baz
+                },
+              ]
+            }
         """
     )
 
