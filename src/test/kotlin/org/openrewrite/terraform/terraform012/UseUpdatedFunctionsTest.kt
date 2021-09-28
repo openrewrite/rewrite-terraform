@@ -43,22 +43,6 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
 
     @Test
     @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
-    fun updateListFunctionToBracketsSyntax() = assertChanged(
-        expectedCyclesThatMakeChanges = 2, // todo
-        before = """
-            locals {
-              list = "${'$'}{list("a", "b", "c")}"
-            }
-        """,
-        after = """
-            locals {
-              list = ["a", "b", "c"]
-            }
-        """
-    )
-
-    @Test
-    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
     fun doNotChangeExistingListBracketSyntax() = assertUnchanged(
         before = """
             locals {
@@ -68,25 +52,14 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
-    fun updateFunctionsComprehensive() = assertChanged(
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
+    fun listSyntax() = assertChanged(
         expectedCyclesThatMakeChanges = 2, // todo
         before = """
             locals {
               list        = "${'$'}{list("a", "b", "c")}"
               list_concat = "${'$'}{concat(list("a", "b"), list("c"))}"
               list_empty  = "${'$'}{list()}"
-
-              map         = "${'$'}{map("a", "b", "c", "d")}"
-              map_merge   = "${'$'}{merge(map("a", "b"), map("c", "d"))}"
-              map_empty   = "${'$'}{map()}"
-              map_invalid = "${'$'}{map("a", "b", "c")}"
-
-              list_of_map = "${'$'}{list(map("a", "b"))}"
-              map_of_list = "${'$'}{map("a", list("b"))}"
-
-              lookup_literal = "${'$'}{lookup(map("a", "b"), "a")}"
-              lookup_ref     = "${'$'}{lookup(local.map, "a")}"
             }
         """,
         after = """
@@ -94,7 +67,25 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
               list        = ["a", "b", "c"]
               list_concat = concat(["a", "b"], ["c"])
               list_empty  = []
-            
+            }
+        """
+    )
+
+    @Test
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/7")
+    @Disabled
+    fun mapSyntax() = assertChanged(
+        expectedCyclesThatMakeChanges = 2, // todo
+        before = """
+            locals {
+              map         = "${'$'}{map("a", "b", "c", "d")}"
+              map_merge   = "${'$'}{merge(map("a", "b"), map("c", "d"))}"
+              map_empty   = "${'$'}{map()}"
+              map_invalid = "${'$'}{map("a", "b", "c")}"
+            }
+        """,
+        after = """
+            locals {
               map = {
                 "a" = "b"
                 "c" = "d"
@@ -109,7 +100,43 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
               )
               map_empty   = {}
               map_invalid = map("a", "b", "c")
+            }
+        """
+    )
 
+    @Test
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
+    @Disabled
+    fun lookupSyntax() = assertChanged(
+        expectedCyclesThatMakeChanges = 2, // todo
+        before = """
+            locals {
+              lookup_literal = "${'$'}{lookup(map("a", "b"), "a")}"
+              lookup_ref     = "${'$'}{lookup(local.map, "a")}"
+            }
+        """,
+        after = """
+            locals {
+              lookup_literal = {
+                a = "b"
+              }["a"]
+              lookup_ref = local.map["a"]
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun intermixedFunctionCalls() = assertChanged(
+        expectedCyclesThatMakeChanges = 2, // todo
+        before = """
+            locals {
+              list_of_map = "${'$'}{list(map("a", "b"))}"
+              map_of_list = "${'$'}{map("a", list("b"))}"
+            }
+        """,
+        after = """
+            locals {
               list_of_map = [
                 {
                   "a" = "b"
@@ -118,11 +145,6 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
               map_of_list = {
                 "a" = ["b"]
               }
-
-              lookup_literal = {
-                a = "b"
-              }["a"]
-              lookup_ref = local.map["a"]
             }
         """
     )
