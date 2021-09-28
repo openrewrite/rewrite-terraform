@@ -42,8 +42,35 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
     )
 
     @Test
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
+    fun updateListFunctionToBracketsSyntax() = assertChanged(
+        expectedCyclesThatMakeChanges = 2, // todo
+        before = """
+            locals {
+              list = "${'$'}{list("a", "b", "c")}"
+            }
+        """,
+        after = """
+            locals {
+              list = ["a", "b", "c"]
+            }
+        """
+    )
+
+    @Test
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
+    fun doNotChangeExistingListBracketSyntax() = assertUnchanged(
+        before = """
+            locals {
+              list = ["a", "b", "c"]
+            }
+        """
+    )
+
+    @Test
     @Disabled
-    fun useUpdatedFunctions() = assertChanged(
+    fun updateFunctionsComprehensive() = assertChanged(
+        expectedCyclesThatMakeChanges = 2, // todo
         before = """
             locals {
               list        = "${'$'}{list("a", "b", "c")}"
@@ -60,16 +87,6 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
 
               lookup_literal = "${'$'}{lookup(map("a", "b"), "a")}"
               lookup_ref     = "${'$'}{lookup(local.map, "a")}"
-
-              # Undocumented HIL implementation details that some users nonetheless relied on.
-              conv_bool_to_string  = "${'$'}{__builtin_BoolToString(true)}"
-              conv_float_to_int    = "${'$'}{__builtin_FloatToInt(1.5)}"
-              conv_float_to_string = "${'$'}{__builtin_FloatToString(1.5)}"
-              conv_int_to_float    = "${'$'}{__builtin_IntToFloat(1)}"
-              conv_int_to_string   = "${'$'}{__builtin_IntToString(1)}"
-              conv_string_to_int   = "${'$'}{__builtin_StringToInt("1")}"
-              conv_string_to_float = "${'$'}{__builtin_StringToFloat("1.5")}"
-              conv_string_to_bool  = "${'$'}{__builtin_StringToBool("true")}"
             }
         """,
         after = """
@@ -106,7 +123,28 @@ class UseUpdatedFunctionsTest : HclRecipeTest {
                 a = "b"
               }["a"]
               lookup_ref = local.map["a"]
+            }
+        """
+    )
 
+    @Test
+    @Disabled
+    fun updateUndocumentedHILFunctions() = assertChanged(
+        before = """
+            locals {
+              # Undocumented HIL implementation details that some users nonetheless relied on.
+              conv_bool_to_string  = "${'$'}{__builtin_BoolToString(true)}"
+              conv_float_to_int    = "${'$'}{__builtin_FloatToInt(1.5)}"
+              conv_float_to_string = "${'$'}{__builtin_FloatToString(1.5)}"
+              conv_int_to_float    = "${'$'}{__builtin_IntToFloat(1)}"
+              conv_int_to_string   = "${'$'}{__builtin_IntToString(1)}"
+              conv_string_to_int   = "${'$'}{__builtin_StringToInt("1")}"
+              conv_string_to_float = "${'$'}{__builtin_StringToFloat("1.5")}"
+              conv_string_to_bool  = "${'$'}{__builtin_StringToBool("true")}"
+            }
+        """,
+        after = """
+            locals {
               # Undocumented HIL implementation details that some users nonetheless relied on.
               conv_bool_to_string  = tostring(tobool(true))
               conv_float_to_int    = floor(1.5)

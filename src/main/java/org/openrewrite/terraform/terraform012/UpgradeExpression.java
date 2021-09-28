@@ -17,9 +17,11 @@ package org.openrewrite.terraform.terraform012;
 
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Incubating;
+import org.openrewrite.Tree;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Expression;
 import org.openrewrite.hcl.tree.Hcl;
+import org.openrewrite.marker.Markers;
 
 import java.util.List;
 
@@ -40,4 +42,14 @@ public class UpgradeExpression extends HclVisitor<ExecutionContext> {
         }
         return super.visitQuotedTemplate(template, ctx);
     }
+
+    @Override
+    public Hcl visitFunctionCall(Hcl.FunctionCall functionCall, ExecutionContext ctx) {
+        if (functionCall.getName().getName().equals("list")) {
+            return new Hcl.Tuple(Tree.randomId(), functionCall.getPrefix(), Markers.EMPTY, functionCall.getPadding().getArguments());
+        }
+        return super.visitFunctionCall(functionCall, ctx);
+    }
+
+
 }
