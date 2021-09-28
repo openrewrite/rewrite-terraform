@@ -60,6 +60,33 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
+    fun updateQuotedTemplateWhenValueIsOnlyExpression() = assertChanged(
+        before = """
+            resource "aws_instance" "example" {
+              ami                     = "${'$'}{var.ami}"
+              instance_type           = "${'$'}{var.instance_type}"
+            }
+        """,
+        after = """
+            resource "aws_instance" "example" {
+              ami                     = var.ami
+              instance_type           = var.instance_type
+            }
+        """
+    )
+
+    @Test
+    @Disabled
+    fun doNotUpdateQuotedTemplateWhenContainsLiteralValues() = assertUnchanged(
+        before = """
+            resource "aws_instance" "example" {
+              ami                     = "before ${'$'}{var.ami}"
+              instance_type           = "${'$'}{var.instance_type} after"
+            }
+        """
+    )
+
+    @Test
     fun doNotChangeExistingUpdatedExpressionSyntax() = assertUnchanged(
         before = """
             variable "ami" {}
