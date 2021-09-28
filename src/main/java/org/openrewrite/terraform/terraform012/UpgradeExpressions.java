@@ -19,46 +19,27 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Incubating;
 import org.openrewrite.Recipe;
 import org.openrewrite.hcl.HclVisitor;
-import org.openrewrite.hcl.tree.Expression;
-import org.openrewrite.hcl.tree.Hcl;
-
-import java.util.List;
 
 /**
  * @see <a href="https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions">https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions</a>
  * @see <a href="https://www.terraform.io/upgrade-guides/0-12.html#first-class-expressions">https://www.terraform.io/upgrade-guides/0-12.html#first-class-expressions</a>
  */
 @Incubating(since = "0.7.0")
-public class UseFirstClassExpressions extends Recipe {
+public class UpgradeExpressions extends Recipe {
     @Override
     public String getDisplayName() {
-        return "Use first class expressions";
+        return "Upgrade expressions";
     }
 
     @Override
     public String getDescription() {
-        return "Replace expressions using string interpolation template syntax (`\"${var.variable}\"`) " +
+        return "Update expressions using string interpolation template syntax (`\"${var.variable}\"`) " +
                 "to using first-class expression syntax (`var.variable`).";
     }
 
     @Override
     protected HclVisitor<ExecutionContext> getVisitor() {
-        return new UseFirstClassExpressionsVisitor();
-    }
-
-    private static class UseFirstClassExpressionsVisitor extends HclVisitor<ExecutionContext> {
-        @Override
-        public Hcl visitQuotedTemplate(Hcl.QuotedTemplate template, ExecutionContext ctx) {
-            List<Expression> expressions = template.getExpressions();
-            if (!expressions.isEmpty()) {
-                Expression e = template.getExpressions().get(0);
-                if (e instanceof Hcl.TemplateInterpolation) {
-                    Hcl.TemplateInterpolation t = (Hcl.TemplateInterpolation) e;
-                    return t.getExpression().withPrefix(template.getPrefix());
-                }
-            }
-            return super.visitQuotedTemplate(template, ctx);
-        }
+        return new UpgradeExpression();
     }
 
 }

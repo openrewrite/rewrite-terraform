@@ -25,7 +25,7 @@ import org.openrewrite.hcl.HclRecipeTest
 @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/argument-commas")
 class UseUpdatedArgumentCommasTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseFirstClassExpressions()
+        get() = UpgradeExpressions()
 
     @Test
     @Disabled

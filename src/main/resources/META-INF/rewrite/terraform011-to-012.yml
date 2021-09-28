@@ -22,5 +22,5 @@ tags:
   - terraform
   - deprecated
 recipeList:
-  - org.openrewrite.terraform.terraform012.UseFirstClassExpressions
+  - org.openrewrite.terraform.terraform012.UpgradeExpressions
   - org.openrewrite.terraform.terraform012.UseUpdatedVariableTypes

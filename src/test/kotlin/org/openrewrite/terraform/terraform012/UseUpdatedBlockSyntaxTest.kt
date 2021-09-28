@@ -27,7 +27,7 @@ import org.openrewrite.hcl.HclRecipeTest
 @Suppress("RemoveCurlyBracesFromTemplate")
 class UseUpdatedBlockSyntaxTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseFirstClassExpressions()
+        get() = UpgradeExpressions()
 
     @Test
     @Disabled

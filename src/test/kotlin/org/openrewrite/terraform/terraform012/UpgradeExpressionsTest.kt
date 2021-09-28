@@ -23,19 +23,13 @@ import org.openrewrite.hcl.HclRecipeTest
 
 @Suppress("RemoveCurlyBracesFromTemplate")
 @Issue("https://github.com/openrewrite/rewrite-terraform/issues/6")
-class UseFirstClassExpressionsTest : HclRecipeTest {
+class UpgradeExpressionsTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseFirstClassExpressions()
+        get() = UpgradeExpressions()
 
     @Test
     fun removeCurlyBracesFromTemplate() = assertChanged(
         before = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                     = "${'$'}{var.ami}"
               instance_type           = "${'$'}{var.instance_type}"
@@ -44,12 +38,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
             }
         """,
         after = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                     = var.ami
               instance_type           = var.instance_type
@@ -89,12 +77,6 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     @Test
     fun doNotChangeExistingUpdatedExpressionSyntax() = assertUnchanged(
         before = """
-            variable "ami" {}
-            variable "instance_type" {}
-            variable "vpc_security_group_ids" {
-              type = "list"
-            }
-
             resource "aws_instance" "example" {
               ami                    = var.ami
               instance_type          = var.instance_type
@@ -243,11 +225,10 @@ class UseFirstClassExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
     fun indexes() = assertChanged(
         before = """
             locals {
-              index_str = "${'$'}{foo[\"a\"]}"
+              index_str = "${'$'}{foo["a"]}"
               index_num = "${'$'}{foo[1]}"
             }
         """,

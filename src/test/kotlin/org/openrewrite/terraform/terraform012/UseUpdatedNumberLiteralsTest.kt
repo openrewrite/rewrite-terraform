@@ -28,7 +28,7 @@ import org.openrewrite.hcl.HclRecipeTest
 @Issue("https://github.com/openrewrite/rewrite-terraform/issues/13")
 class UseUpdatedNumberLiteralsTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseFirstClassExpressions()
+        get() = UpgradeExpressions()
 
     @Test
     @Disabled
