@@ -133,28 +133,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
     )
 
     @Test
-    @Disabled
-    fun expressionsWithListsAndMaps() = assertChanged(
-        before = """
-            resource "aws_instance" "example" {
-              # The following works because the list structure is static
-              vpc_security_group_ids = ["${'$'}{var.security_group_1}", "${'$'}{var.security_group_2}"]
-
-              # The following doesn't work, because the [...] syntax isn't known to the interpolation language
-              vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? [var.security_group_id] : []}"
-
-              # Instead, it's necessary to use the list() function
-              vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? list(var.security_group_id) : list()}"
-            }
-        """,
-        after = """
-            resource "aws_instance" "example" {
-              vpc_security_group_ids = var.security_group_id != "" ? [var.security_group_id] : []
-            }
-        """
-    )
-
-    @Test
     fun arithmetic() = assertChanged(
         before = """
             locals {
