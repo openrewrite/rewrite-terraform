@@ -15,6 +15,7 @@
  */
 package org.openrewrite.terraform.terraform012
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.openrewrite.Issue
 import org.openrewrite.Recipe
@@ -24,9 +25,10 @@ import org.openrewrite.hcl.HclRecipeTest
 @Issue("https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/argument-commas")
 class UseUpdatedArgumentCommasTest : HclRecipeTest {
     override val recipe: Recipe
-        get() = UseUpdatedVariableTypes()
+        get() = UseFirstClassExpressions()
 
     @Test
+    @Disabled
     fun useUpdatedArgumentCommas() = assertChanged(
         before = """
             locals {
