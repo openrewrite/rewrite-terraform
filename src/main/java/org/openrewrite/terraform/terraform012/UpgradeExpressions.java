@@ -18,7 +18,13 @@ package org.openrewrite.terraform.terraform012;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Incubating;
 import org.openrewrite.Recipe;
+import org.openrewrite.Tree;
 import org.openrewrite.hcl.HclVisitor;
+import org.openrewrite.hcl.tree.Expression;
+import org.openrewrite.hcl.tree.Hcl;
+import org.openrewrite.marker.Markers;
+
+import java.util.List;
 
 /**
  * @see <a href="https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions">https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions</a>
@@ -40,6 +46,34 @@ public class UpgradeExpressions extends Recipe {
     @Override
     protected HclVisitor<ExecutionContext> getVisitor() {
         return new UpgradeExpression();
+    }
+
+    /**
+     * https://github.com/hashicorp/terraform/blob/v0.12.31/configs/configupgrade/upgrade_expr.go
+     */
+    private static class UpgradeExpression extends HclVisitor<ExecutionContext> {
+        @Override
+        public Hcl visitQuotedTemplate(Hcl.QuotedTemplate template, ExecutionContext ctx) {
+            List<Expression> expressions = template.getExpressions();
+            if (!expressions.isEmpty()) {
+                Expression e = template.getExpressions().get(0);
+                if (e instanceof Hcl.TemplateInterpolation) {
+                    Hcl.TemplateInterpolation t = (Hcl.TemplateInterpolation) e;
+                    return t.getExpression().withPrefix(template.getPrefix());
+                }
+            }
+            return super.visitQuotedTemplate(template, ctx);
+        }
+
+        @Override
+        public Hcl visitFunctionCall(Hcl.FunctionCall functionCall, ExecutionContext ctx) {
+            if (functionCall.getName().getName().equals("list")) {
+                return new Hcl.Tuple(Tree.randomId(), functionCall.getPrefix(), Markers.EMPTY, functionCall.getPadding().getArguments());
+            }
+            return super.visitFunctionCall(functionCall, ctx);
+        }
+
+
     }
 
 }
