@@ -23,4 +23,3 @@ tags:
   - deprecated
 recipeList:
   - org.openrewrite.terraform.terraform012.UpgradeExpressions
-  - org.openrewrite.terraform.terraform012.UseUpdatedVariableTypes

@@ -29,48 +29,21 @@ class UpgradeExpressionsTest : HclRecipeTest {
         get() = UpgradeExpressions()
 
     @Test
-    fun removeCurlyBracesFromTemplate() = assertChanged(
+    fun updateQuotedTemplateWhenValueIsOnlyExpression() = assertChanged(
         before = """
             resource "aws_instance" "example" {
-              ami                     = "${'$'}{var.ami}"
-              instance_type           = "${'$'}{var.instance_type}"
+              ami                     = "before ${'$'}{var.ami}"
+              instance_type           = "${'$'}{var.instance_type} after"
 
               vpc_security_group_ids  = "${'$'}{var.vpc_security_group_ids}"
             }
         """,
         after = """
             resource "aws_instance" "example" {
-              ami                     = var.ami
-              instance_type           = var.instance_type
-
-              vpc_security_group_ids  = var.vpc_security_group_ids
-            }
-        """
-    )
-
-    @Test
-    fun updateQuotedTemplateWhenValueIsOnlyExpression() = assertChanged(
-        before = """
-            resource "aws_instance" "example" {
-              ami                     = "${'$'}{var.ami}"
-              instance_type           = "${'$'}{var.instance_type}"
-            }
-        """,
-        after = """
-            resource "aws_instance" "example" {
-              ami                     = var.ami
-              instance_type           = var.instance_type
-            }
-        """
-    )
-
-    @Test
-    @Disabled
-    fun doNotUpdateQuotedTemplateWhenContainsLiteralValues() = assertUnchanged(
-        before = """
-            resource "aws_instance" "example" {
               ami                     = "before ${'$'}{var.ami}"
               instance_type           = "${'$'}{var.instance_type} after"
+
+              vpc_security_group_ids  = var.vpc_security_group_ids
             }
         """
     )
@@ -91,7 +64,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
      * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/nested-exprs-in-hcl
      */
     @Test
-    @Disabled
     fun nestedExpressions() = assertChanged(
         before = """
             locals {
@@ -129,8 +101,37 @@ class UpgradeExpressionsTest : HclRecipeTest {
               in_list_of_map = [
                 {
                   foo = var.baz
-                },
+                }
               ]
+            }
+        """
+    )
+
+    @Test
+    @Disabled("Syntax error at line 2:64 no viable alternative at input") // https://github.com/terraform-aws-modules/terraform-aws-vpc/pull/265/files#diff-dc46acf24afd63ef8c556b77c126ccc6e578bc87e3aa09a931f33d9bf2532fbbR512
+    fun multipleConditionals() = assertChanged(
+        before = """
+            resource "aws_network_acl_rule" "public_outbound" {
+              count = "${'$'}{var.create_vpc && var.public_dedicated_network_acl && length(var.public_subnets) > 0 ? length(var.public_outbound_acl_rules) : 0}"
+            }
+        """,
+        after = """
+            resource "aws_network_acl_rule" "public_outbound" {
+              count = var.create_vpc && var.public_dedicated_network_acl && length(var.public_subnets) > 0 ? length(var.public_outbound_acl_rules) : 0
+            }
+        """
+    )
+
+    @Test
+    fun functions() = assertChanged(
+        before = """
+            locals {
+              tags = "${'$'}{merge(var.common_tags, var.specific_tags)}"
+            }
+        """,
+        after = """
+            locals {
+              tags = merge(var.common_tags, var.specific_tags)
             }
         """
     )
@@ -239,11 +240,11 @@ class UpgradeExpressionsTest : HclRecipeTest {
         """
     )
 
-    /**
-     * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/argument-commas
-     */
     @Nested
     inner class UseUpdatedArgumentCommasTest {
+        /**
+         * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/argument-commas
+         */
         @Test
         @Disabled
         fun useUpdatedArgumentCommas() = assertChanged(
@@ -506,12 +507,12 @@ class UpgradeExpressionsTest : HclRecipeTest {
 
     }
 
-    /**
-     * https://github.com/hashicorp/terraform/blob/v0.12.31/configs/configupgrade/testdata/valid/provisioner/input/provisioner.tf
-     * https://www.terraform.io/upgrade-guides/0-12.html#default-settings-in-connection-blocks
-     */
     @Nested
     inner class UseUpdatedConnectionBlockTest {
+        /**
+         * https://github.com/hashicorp/terraform/blob/v0.12.31/configs/configupgrade/testdata/valid/provisioner/input/provisioner.tf
+         * https://www.terraform.io/upgrade-guides/0-12.html#default-settings-in-connection-blocks
+         */
         @Test
         @Disabled
         fun useUpdatedConnectionBlock() = assertChanged(
@@ -569,22 +570,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
      */
     @Nested
     inner class UseUpdatedFunctionsTest {
-        @Test
-        @Disabled
-        fun removeCurlyBracesFromFunctions() = assertChanged(
-            expectedCyclesThatMakeChanges = 2, // todo
-            before = """
-                locals {
-                  tags = "${'$'}{merge(map("Name", "example"), var.common_tags)}"
-                }
-            """,
-            after = """
-                locals {
-                  tags = merge({ Name = "example" }, var.common_tags)
-                }
-            """
-        )
-
         @Test
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/4")
         fun doNotChangeExistingListTupleSyntax() = assertUnchanged(
@@ -655,18 +640,33 @@ class UpgradeExpressionsTest : HclRecipeTest {
         @Test
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
         @Disabled
-        fun lookupSyntax() = assertChanged(
+        fun lookupSyntaxLiteral() = assertChanged(
             expectedCyclesThatMakeChanges = 2, // todo
             before = """
                 locals {
                   lookup_literal = "${'$'}{lookup(map(a, "b"), "a")}"
-                  lookup_ref     = "${'$'}{lookup(local.map, "a")}"
                 }
             """,
             after = """
                 locals {
                   lookup_literal = { a = "b" }["a"]
-                  lookup_ref     = local.map["a"]
+                }
+            """
+        )
+
+        @Test
+        @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
+        @Disabled
+        fun lookupSyntaxReference() = assertChanged(
+            expectedCyclesThatMakeChanges = 2, // todo
+            before = """
+                locals {
+                  lookup_ref = "${'$'}{lookup(local.map, "a")}"
+                }
+            """,
+            after = """
+                locals {
+                  lookup_ref = local.map["a"]
                 }
             """
         )
@@ -721,11 +721,11 @@ class UpgradeExpressionsTest : HclRecipeTest {
         )
     }
 
-    /**
-     * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/indexed-splat
-     */
     @Nested
     inner class UseUpdatedIndexSplatSyntaxTest {
+        /**
+         * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/indexed-splat
+         */
         @Test
         @Disabled
         fun useUpdatedIndexSplatSyntax() = assertChanged(
@@ -892,6 +892,7 @@ class UpgradeExpressionsTest : HclRecipeTest {
         @Test
         @Disabled
         fun redundantList() = assertChanged(
+            expectedCyclesThatMakeChanges = 2, // todo
             before = """
                 variable "list_example" {
                   type = "list"
@@ -1038,7 +1039,7 @@ class UpgradeExpressionsTest : HclRecipeTest {
     @Nested
     inner class UseUpdatedNumberLiteralsTest {
         @Test
-        @Disabled
+        @Disabled("Syntax error at line 6:23 extraneous input '=' expecting {'{', Identifier, QUOTE}.")
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/13")
         fun useUpdatedNumberLiterals() = assertChanged(
             before = """
@@ -1062,11 +1063,11 @@ class UpgradeExpressionsTest : HclRecipeTest {
         )
     }
 
-    /**
-     * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/resource-count-ref
-     */
     @Nested
     inner class UseUpdatedResourceCountReferencesTest {
+        /**
+         * https://github.com/hashicorp/terraform/tree/v0.12.31/configs/configupgrade/testdata/valid/resource-count-ref
+         */
         @Test
         @Disabled
         fun useUpdatedResourceCountReferences() = assertChanged(
@@ -1130,6 +1131,77 @@ class UpgradeExpressionsTest : HclRecipeTest {
 
                 output "data_many" {
                   value = length(data.terraform_remote_state.many)
+                }
+            """
+        )
+    }
+
+    @Nested
+    @Issue("https://github.com/openrewrite/rewrite-terraform/issues/5")
+    inner class UseUpdatedVariableTypesTest {
+        @Test
+        fun string() = assertChanged(
+            before = """
+                variable "str" {
+                  type = "string"
+                }
+            """,
+            after = """
+                variable "str" {
+                  type = string
+                }
+            """
+        )
+
+        @Test
+        fun listOfString() = assertChanged(
+            before = """
+                variable "vpc_security_group_ids" {
+                  type = "list"
+                }
+            """,
+            after = """
+                variable "vpc_security_group_ids" {
+                  type = list(string)
+                }
+            """
+        )
+
+        @Test
+        fun mapOfString() = assertChanged(
+            before = """
+                variable "tags" {
+                  type    = "map"
+
+                  default = {
+                    Name = "dev"
+                  }
+                }
+            """,
+            after = """
+                variable "tags" {
+                  type    = map(string)
+
+                  default = {
+                    Name = "dev"
+                  }
+                }
+            """
+        )
+
+        @Test
+        @Disabled("check whether this is in-scope for this particular issue")
+        fun boolean() = assertChanged(
+            before = """
+                variable "enabled" {
+                  default = "false"
+                  type = "bool"
+                }
+            """,
+            after = """
+                variable "enabled" {
+                  default = false
+                  type = bool
                 }
             """
         )

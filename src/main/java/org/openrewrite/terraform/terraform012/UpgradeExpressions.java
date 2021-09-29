@@ -24,8 +24,6 @@ import org.openrewrite.hcl.tree.Expression;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.marker.Markers;
 
-import java.util.List;
-
 /**
  * @see <a href="https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions">https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions</a>
  * @see <a href="https://www.terraform.io/upgrade-guides/0-12.html#first-class-expressions">https://www.terraform.io/upgrade-guides/0-12.html#first-class-expressions</a>
@@ -53,9 +51,14 @@ public class UpgradeExpressions extends Recipe {
      */
     private static class UpgradeExpression extends HclVisitor<ExecutionContext> {
         @Override
+        public Hcl visitConfigFile(Hcl.ConfigFile configFile, ExecutionContext ctx) {
+            doAfterVisit(new UpgradeVariableTypes());
+            return super.visitConfigFile(configFile, ctx);
+        }
+
+        @Override
         public Hcl visitQuotedTemplate(Hcl.QuotedTemplate template, ExecutionContext ctx) {
-            List<Expression> expressions = template.getExpressions();
-            if (!expressions.isEmpty()) {
+            if (template.getExpressions().size() == 1) {
                 Expression e = template.getExpressions().get(0);
                 if (e instanceof Hcl.TemplateInterpolation) {
                     Hcl.TemplateInterpolation t = (Hcl.TemplateInterpolation) e;
@@ -67,13 +70,57 @@ public class UpgradeExpressions extends Recipe {
 
         @Override
         public Hcl visitFunctionCall(Hcl.FunctionCall functionCall, ExecutionContext ctx) {
-            if (functionCall.getName().getName().equals("list")) {
-                return new Hcl.Tuple(Tree.randomId(), functionCall.getPrefix(), Markers.EMPTY, functionCall.getPadding().getArguments());
+            Hcl.FunctionCall f = (Hcl.FunctionCall) super.visitFunctionCall(functionCall, ctx);
+            if (f.getName().getName().equals("list")) {
+                return new Hcl.Tuple(Tree.randomId(), f.getPrefix(), Markers.EMPTY, f.getPadding().getArguments());
             }
-            return super.visitFunctionCall(functionCall, ctx);
+            return f;
         }
-
 
     }
 
+    /**
+     * Use updated variable type syntax
+     * <p>
+     * Removes unnecessary quotation marks around variable type declarations.
+     * Additionally, adjusts variable types of `list` and `map` to be explicitly type constrained by `string`
+     * to be in compliance with Terraform 0.12.+ syntax. In Terraform 0.11 and earlier,
+     * `list` and `map` really meant '`list` and `map` of type `string`.
+     *
+     * @see <a href="https://www.terraform.io/upgrade-guides/0-12.html#type-constraints-on-variables">https://www.terraform.io/upgrade-guides/0-12.html#type-constraints-on-variables</a>
+     */
+    private static class UpgradeVariableTypes extends HclVisitor<ExecutionContext> {
+        @Override
+        public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {
+            if (block.getType() != null && block.getType().getName().equals("variable")) {
+                return super.visitBlock(block, ctx);
+            }
+            return block;
+        }
+
+        @Override
+        public Hcl visitAttribute(Hcl.Attribute attribute, ExecutionContext ctx) {
+            // todo
+            // There is almost certainly a cleaner way to do this by extracting out some sort of "upgradeExpression"
+            // logic or visitor, or using visitLiteral, etc. For the moment, going to leave this as-is, but
+            // feel free to change this.
+            Hcl.Attribute attr = (Hcl.Attribute) super.visitAttribute(attribute, ctx);
+            if (attr.getSimpleName().equals("type")) {
+                Expression e = attr.getValue();
+                if (e instanceof Hcl.QuotedTemplate && !((Hcl.QuotedTemplate) e).getExpressions().isEmpty()) {
+                    Expression first = ((Hcl.QuotedTemplate) e).getExpressions().get(0);
+                    if (first instanceof Hcl.Literal) {
+                        Hcl.Literal l = (Hcl.Literal) first;
+                        if (l.getValueSource().equals("list")) {
+                            l = l.withValueSource("list(string)");
+                        } else if (l.getValueSource().equals("map")) {
+                            l = l.withValueSource("map(string)");
+                        }
+                        return attr.withValue(l.withPrefix(e.getPrefix()));
+                    }
+                }
+            }
+            return attr;
+        }
+    }
 }
