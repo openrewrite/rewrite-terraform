@@ -108,6 +108,20 @@ class UpgradeExpressionsTest : HclRecipeTest {
     )
 
     @Test
+    fun keepTemplateInterpolationsWhenCombinedWithOtherExpressions() = assertChanged(
+        before = """
+            locals {
+              formatted = "${'$'}{format("%s-${'$'}{var.subnet_suffix}", var.name)}"
+            }
+        """,
+        after = """
+            locals {
+              formatted = format("%s-${'$'}{var.subnet_suffix}", var.name)
+            }
+        """
+    )
+
+    @Test
     @Disabled("Syntax error at line 2:64 no viable alternative at input") // https://github.com/terraform-aws-modules/terraform-aws-vpc/pull/265/files#diff-dc46acf24afd63ef8c556b77c126ccc6e578bc87e3aa09a931f33d9bf2532fbbR512
     fun multipleConditionals() = assertChanged(
         before = """
@@ -516,6 +530,7 @@ class UpgradeExpressionsTest : HclRecipeTest {
         @Test
         @Disabled
         fun useUpdatedConnectionBlock() = assertChanged(
+            expectedCyclesThatMakeChanges = 2, // todo
             before = """
                 variable "login_username" {}
 
@@ -538,8 +553,7 @@ class UpgradeExpressionsTest : HclRecipeTest {
                 }
             """,
             after = """
-                variable "login_username" {
-                }
+                variable "login_username" {}
 
                 resource "aws_instance" "foo" {
                   connection {
@@ -867,20 +881,14 @@ class UpgradeExpressionsTest : HclRecipeTest {
         @Test
         @Disabled
         fun expressionsWithListsAndMaps() = assertChanged(
+            expectedCyclesThatMakeChanges = 2, // todo
             before = """
-                resource "aws_instance" "example" {
-                  # The following works because the list structure is static
-                  vpc_security_group_ids = ["${'$'}{var.security_group_1}", "${'$'}{var.security_group_2}"]
-
-                  # The following doesn't work, because the [...] syntax isn't known to the interpolation language
-                  vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? [var.security_group_id] : []}"
-
-                  # Instead, it's necessary to use the list() function
+                locals {
                   vpc_security_group_ids = "${'$'}{var.security_group_id != "" ? list(var.security_group_id) : list()}"
                 }
             """,
             after = """
-                resource "aws_instance" "example" {
+                locals {
                   vpc_security_group_ids = var.security_group_id != "" ? [var.security_group_id] : []
                 }
             """
