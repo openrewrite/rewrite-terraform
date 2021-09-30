@@ -22,6 +22,8 @@ import org.openrewrite.Tree;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Expression;
 import org.openrewrite.hcl.tree.Hcl;
+import org.openrewrite.hcl.tree.HclRightPadded;
+import org.openrewrite.hcl.tree.Space;
 import org.openrewrite.marker.Markers;
 
 /**
@@ -71,8 +73,55 @@ public class UpgradeExpressions extends Recipe {
         @Override
         public Hcl visitFunctionCall(Hcl.FunctionCall functionCall, ExecutionContext ctx) {
             Hcl.FunctionCall f = (Hcl.FunctionCall) super.visitFunctionCall(functionCall, ctx);
-            if (f.getName().getName().equals("list")) {
-                return new Hcl.Tuple(Tree.randomId(), f.getPrefix(), Markers.EMPTY, f.getPadding().getArguments());
+            switch (f.getName().getName()) {
+                case "list":
+                    return new Hcl.Tuple(Tree.randomId(), f.getPrefix(), Markers.EMPTY, f.getPadding().getArguments());
+                case "map":
+                    // todo
+                    break;
+                case "lookup":
+                    // A lookup call with only two arguments is equivalent to native index syntax.
+                    // A third argument would specify a default value, so calls like that must be left alone.
+                    if (f.getVariables().size() == 2) {
+                        return new Hcl.Index(
+                                Tree.randomId(),
+                                f.getPrefix(),
+                                Markers.EMPTY,
+                                f.getVariables().get(0),
+                                new Hcl.Index.Position(
+                                        Tree.randomId(),
+                                        Space.EMPTY,
+                                        Markers.EMPTY,
+                                        HclRightPadded.build(f.getVariables().get(1).withPrefix(Space.EMPTY))
+                                )
+                        );
+                    }
+                    break;
+                case "element":
+                    // todo
+                    break;
+                case "__builtin_BoolToString":
+                    // todo
+                    break;
+                case "__builtin_FloatToString":
+                    // todo
+                    break;
+                case "__builtin_IntToString":
+                    // todo
+                    break;
+                case "__builtin_StringToInt":
+                    // todo
+                    break;
+                case "__builtin_StringToFloat":
+                    // todo
+                    break;
+                case "__builtin_StringToBool":
+                    // todo
+                    break;
+                case "__builtin_FloatToInt":
+                case "__builtin_IntToFloat":
+                    // todo
+                    break;
             }
             return f;
         }

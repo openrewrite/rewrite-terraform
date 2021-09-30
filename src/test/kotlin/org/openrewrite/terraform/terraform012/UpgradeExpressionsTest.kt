@@ -653,12 +653,37 @@ class UpgradeExpressionsTest : HclRecipeTest {
 
         @Test
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
-        @Disabled
+        fun doNotChangeExistingLookupSyntax() = assertUnchanged(
+            before = """
+                resource "aws_network_acl_rule" "private_inbound" {
+                  count    = 5
+                  protocol = var.private_inbound_acl_rules[count.index]["protocol"]
+                }
+            """
+        )
+
+        @Test
+        @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
+        fun doNotChangeLookupSyntaxWithThreeArguments() = assertChanged(
+            before = """
+                locals {
+                  lookup_ref = "${'$'}{lookup(local.map, "a", "default")}"
+                }
+            """,
+            after = """
+                locals {
+                  lookup_ref = lookup(local.map, "a", "default")
+                }
+            """
+        )
+
+        @Test
+        @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
         fun lookupSyntaxLiteral() = assertChanged(
             expectedCyclesThatMakeChanges = 2, // todo
             before = """
                 locals {
-                  lookup_literal = "${'$'}{lookup(map(a, "b"), "a")}"
+                  lookup_literal = "${'$'}{lookup({ a = "b" }, "a")}"
                 }
             """,
             after = """
@@ -670,7 +695,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
 
         @Test
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/8")
-        @Disabled
         fun lookupSyntaxReference() = assertChanged(
             expectedCyclesThatMakeChanges = 2, // todo
             before = """
@@ -706,6 +730,7 @@ class UpgradeExpressionsTest : HclRecipeTest {
         @Test
         @Disabled
         fun updateUndocumentedHILFunctions() = assertChanged(
+            expectedCyclesThatMakeChanges = 2, // todo
             before = """
                 locals {
                   # Undocumented HIL implementation details that some users nonetheless relied on.
