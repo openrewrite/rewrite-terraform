@@ -630,7 +630,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
 
         @Test
         @Issue("https://github.com/openrewrite/rewrite-terraform/issues/7")
-        @Disabled
         fun mapObjectSyntax() = assertChanged(
             expectedCyclesThatMakeChanges = 2, // todo
             before = """
@@ -643,8 +642,8 @@ class UpgradeExpressionsTest : HclRecipeTest {
             """,
             after = """
                 locals {
-                  map         = { "a" = "b", "c" = "d" }
-                  map_merge   = merge({ "a" = "b" }, { "c" = "d" })
+                  map         = {"a"="b","c"="d"}
+                  map_merge   = merge({"a"="b"}, {"c"="d"})
                   map_empty   = {}
                   map_invalid = map("a", "b", "c")
                 }
@@ -710,7 +709,6 @@ class UpgradeExpressionsTest : HclRecipeTest {
         )
 
         @Test
-        @Disabled
         fun intermixedFunctionCalls() = assertChanged(
             expectedCyclesThatMakeChanges = 2, // todo
             before = """
@@ -721,8 +719,8 @@ class UpgradeExpressionsTest : HclRecipeTest {
             """,
             after = """
                 locals {
-                  list_of_map = [{ "a" = "b" }]
-                  map_of_list = { "a" = ["b"] }
+                  list_of_map = [{"a"="b"}]
+                  map_of_list = {"a"=["b"]}
                 }
             """
         )

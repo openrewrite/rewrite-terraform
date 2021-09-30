@@ -20,11 +20,11 @@ import org.openrewrite.Incubating;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
 import org.openrewrite.hcl.HclVisitor;
-import org.openrewrite.hcl.tree.Expression;
-import org.openrewrite.hcl.tree.Hcl;
-import org.openrewrite.hcl.tree.HclRightPadded;
-import org.openrewrite.hcl.tree.Space;
+import org.openrewrite.hcl.tree.*;
 import org.openrewrite.marker.Markers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @see <a href="https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions">https://www.hashicorp.com/blog/terraform-0-12-preview-first-class-expressions</a>
@@ -77,7 +77,28 @@ public class UpgradeExpressions extends Recipe {
                 case "list":
                     return new Hcl.Tuple(Tree.randomId(), f.getPrefix(), Markers.EMPTY, f.getPadding().getArguments());
                 case "map":
-                    // todo
+                    // opportunity for formatting and template usage; todo
+                    if (f.getVariables().isEmpty() || f.getVariables().get(0) instanceof Hcl.Empty) {
+                        return new Hcl.ObjectValue(Tree.randomId(), f.getPrefix(), Markers.EMPTY, f.getPadding().getArguments());
+                    } else if (f.getVariables().size() % 2 == 0) {
+                        List<HclRightPadded<Expression>> elms = new ArrayList<>();
+                        for (int i = 0; i < f.getVariables().size(); i += 2) {
+                            Expression e0 = f.getVariables().get(i);
+                            Expression e1 = f.getVariables().get(i + 1);
+                            HclRightPadded<Expression> hclRightPadded = HclRightPadded.build(new Hcl.Attribute(
+                                            Tree.randomId(),
+                                            Space.EMPTY,
+                                            Markers.EMPTY,
+                                            e0.withPrefix(Space.EMPTY),
+                                            HclLeftPadded.build(Hcl.Attribute.Type.Assignment),
+                                            e1.withPrefix(Space.EMPTY)
+                                    )
+                            );
+                            elms.add(hclRightPadded);
+                        }
+                        return new Hcl.ObjectValue(Tree.randomId(), f.getPrefix(), Markers.EMPTY, HclContainer.build(elms));
+                    }
+                    // if the map call has an uneven number of arguments, it is an invalid map construction, so we leave it alone.
                     break;
                 case "lookup":
                     // A lookup call with only two arguments is equivalent to native index syntax.
