@@ -23,7 +23,7 @@ public final class TerraformResource {
     }
 
     public static boolean isResource(Hcl.Block block, String resourceName) {
-        if (block.getType() != null && block.getType().getName().equals("resource")) {
+        if (block.getType() != null && "resource".equals(block.getType().getName())) {
             for (Label label : block.getLabels()) {
                 if (label instanceof Hcl.Identifier) {
                     return ((Hcl.Identifier) label).getName().equals(resourceName);
