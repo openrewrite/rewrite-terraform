@@ -24,6 +24,8 @@ import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.terraform.TerraformResource;
 
+import java.time.Duration;
+
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class FindResource extends Recipe {
@@ -40,6 +42,11 @@ public class FindResource extends Recipe {
     @Override
     public String getDescription() {
         return "Find a Terraform resource by resource type.";
+    }
+
+    @Override
+    public Duration getEstimatedEffortPerOccurrence() {
+        return Duration.ofMinutes(5);
     }
 
     @Override

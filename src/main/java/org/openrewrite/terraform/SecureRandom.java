@@ -25,6 +25,8 @@ import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.internal.lang.Nullable;
 
+import java.time.Duration;
+
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class SecureRandom extends Recipe {
@@ -39,6 +41,11 @@ public class SecureRandom extends Recipe {
     @Override
     public String getDisplayName() {
         return "Use a long enough byte length for `random` resources";
+    }
+
+    @Override
+    public Duration getEstimatedEffortPerOccurrence() {
+        return Duration.ofMinutes(5);
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.BodyContent;
 import org.openrewrite.hcl.tree.Hcl;
 
+import java.time.Duration;
 import java.util.List;
 
 @Value
@@ -48,6 +49,11 @@ public class AddConfiguration extends Recipe {
     @Override
     public String getDescription() {
         return "If the configuration has a different value, leave it alone. If it is missing, add it.";
+    }
+
+    @Override
+    public Duration getEstimatedEffortPerOccurrence() {
+        return Duration.ofMinutes(5);
     }
 
     @Override
