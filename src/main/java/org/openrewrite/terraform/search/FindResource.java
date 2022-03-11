@@ -53,7 +53,7 @@ public class FindResource extends Recipe {
     protected HclVisitor<ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
-            public Hcl visitBlock(Hcl.Block block, ExecutionContext executionContext) {
+            public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {
                 Hcl.Block b = block;
 
                 if (TerraformResource.isResource(b, resourceName)) {
