@@ -53,7 +53,7 @@ object RewriteTerraformProjectOnDisk {
         val parser: HclParser = HclParser.builder().build()
 
         val sourceFiles: List<SourceFile> = parser.parse(paths, srcDir, InMemoryExecutionContext())
-        recipe.run(sourceFiles, InMemoryExecutionContext { t -> t.printStackTrace() }).map {
+        recipe.run(sourceFiles, InMemoryExecutionContext { t -> t.printStackTrace() }).results.map {
             println(it.diff())
             if (System.getenv("rewrite.autofix")?.equals("true") == true) {
                 it.after!!.sourcePath.toFile().writeText(it.after!!.printAll(), Charsets.UTF_8)
