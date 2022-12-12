@@ -16,22 +16,27 @@
 package org.openrewrite.terraform
 
 import org.junit.jupiter.api.Test
-import org.openrewrite.hcl.HclRecipeTest
+import org.openrewrite.hcl.Assertions.hcl
+import org.openrewrite.test.RecipeSpec
+import org.openrewrite.test.RewriteTest
 
-class SecureRandomTest : HclRecipeTest {
+class SecureRandomTest : RewriteTest {
+
+    override fun defaults(spec: RecipeSpec) {
+        spec.recipe(SecureRandom(20))
+    }
 
     @Test
-    fun secureRandom() = assertChanged(
-        recipe = SecureRandom(20),
-        before = """
+    fun secureRandom() = rewriteRun(
+        hcl("""
             resource "random_id" "random" {
               byte_length = 11
             }
-        """,
-        after = """
+            """,
+            """
             resource "random_id" "random" {
               byte_length = 20
             }
-        """
+            """)
     )
 }
