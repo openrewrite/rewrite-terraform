@@ -15,6 +15,7 @@
  */
 package org.openrewrite.terraform;
 
+import org.openrewrite.RecipeRun;
 import org.openrewrite.Result;
 import org.openrewrite.hcl.HclParser;
 import org.openrewrite.hcl.tree.Hcl;
@@ -31,9 +32,9 @@ public class Example {
                 "  byte_length = 11\n" +
                 "}");
 
-        List<Result> results = new SecureRandom(20).run(tfs);
+        RecipeRun recipeRun = new SecureRandom(20).run(tfs);
 
-        for (Result result : results) {
+        for (Result result : recipeRun.getResults()) {
             // you could overwrite the original source with this string
             // result.getAfter().print();
 

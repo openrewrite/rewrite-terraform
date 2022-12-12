@@ -44,6 +44,11 @@ public class SecureRandom extends Recipe {
     }
 
     @Override
+    public String getDescription() {
+        return "Use a long enough byte length for `random` resources.";
+    }
+
+    @Override
     public Duration getEstimatedEffortPerOccurrence() {
         return Duration.ofMinutes(5);
     }
