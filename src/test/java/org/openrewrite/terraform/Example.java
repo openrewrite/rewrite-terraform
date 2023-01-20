@@ -22,15 +22,17 @@ import org.openrewrite.hcl.tree.Hcl;
 
 import java.util.List;
 
+
 public class Example {
     public static void main(String[] args) {
+
         HclParser hclParser = HclParser.builder().build();
 
         // there are other forms of parse that take file paths, etc.
-        List<Hcl.ConfigFile> tfs = hclParser.parse("" +
-                "resource \"random_id\" \"random\" {\n" +
-                "  byte_length = 11\n" +
-                "}");
+        List<Hcl.ConfigFile> tfs = hclParser.parse("""
+          resource "random_id" "random" {
+            byte_length = 11
+          }""");
 
         RecipeRun recipeRun = new SecureRandom(20).run(tfs);
 
