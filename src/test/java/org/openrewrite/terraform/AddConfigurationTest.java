@@ -16,6 +16,7 @@
 package org.openrewrite.terraform;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.terraform.AddConfiguration;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -29,6 +30,7 @@ class AddConfigurationTest implements RewriteTest {
             "encrypted = true"));
     }
 
+    @DocumentExample
     @Test
     void addEncryptedToEbsVolume() {
         rewriteRun(

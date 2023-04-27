@@ -16,6 +16,7 @@
 package org.openrewrite.terraform;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.terraform.SecureRandom;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,6 +29,7 @@ class SecureRandomTest implements RewriteTest {
         spec.recipe(new SecureRandom(20));
     }
 
+    @DocumentExample
     @Test
     void secureRandom() {
         rewriteRun(

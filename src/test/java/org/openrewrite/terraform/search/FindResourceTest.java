@@ -16,6 +16,7 @@
 package org.openrewrite.terraform.search;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.terraform.search.FindResource;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,6 +29,7 @@ class FindResourceTest implements RewriteTest {
         spec.recipe(new FindResource("aws_ebs_volume"));
     }
 
+    @DocumentExample
     @Test
     void findResource() {
         rewriteRun(
