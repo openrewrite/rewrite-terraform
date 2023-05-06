@@ -57,7 +57,7 @@ public class AddConfiguration extends Recipe {
     }
 
     @Override
-    protected HclVisitor<ExecutionContext> getVisitor() {
+    public HclVisitor<ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
             public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {
