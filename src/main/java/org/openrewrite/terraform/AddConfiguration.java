@@ -65,6 +65,7 @@ public class AddConfiguration extends Recipe {
 
                 if (TerraformResource.isResource(b, resourceName)) {
                     b = b.withTemplate(HclTemplate.builder(getCursor()::getParent, content).build(),
+                            getCursor(),
                             b.getCoordinates().last());
 
                     List<BodyContent> body = b.getBody();

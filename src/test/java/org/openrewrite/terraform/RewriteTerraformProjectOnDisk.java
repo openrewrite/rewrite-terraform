@@ -17,13 +17,13 @@ package org.openrewrite.terraform;
 
 
 import org.openrewrite.InMemoryExecutionContext;
-import org.openrewrite.LargeIterable;
+import org.openrewrite.LargeSourceSet;
 import org.openrewrite.Recipe;
 import org.openrewrite.SourceFile;
 import org.openrewrite.config.Environment;
 import org.openrewrite.hcl.HclParser;
 import org.openrewrite.hcl.tree.Hcl;
-import org.openrewrite.internal.InMemoryLargeIterable;
+import org.openrewrite.internal.InMemoryLargeSourceSet;
 import org.openrewrite.terraform.search.FindResource;
 
 import java.io.BufferedWriter;
@@ -58,8 +58,8 @@ public class RewriteTerraformProjectOnDisk {
 
         HclParser parser = HclParser.builder().build();
         InMemoryExecutionContext ctx = new InMemoryExecutionContext(Throwable::printStackTrace);
-        LargeIterable<Hcl.ConfigFile> sourceFiles = new InMemoryLargeIterable<>(parser.parse(paths, srcDir, ctx).collect(Collectors.toList()));
-        recipe.run(sourceFiles, ctx).getResults().forEach(it -> {
+        LargeSourceSet sourceFiles = new InMemoryLargeSourceSet(parser.parse(paths, srcDir, ctx).collect(Collectors.toList()));
+        recipe.run(sourceFiles, ctx).getChangeset().getAllResults().forEach(it -> {
             System.out.println(it.diff());
             if("true".equals(System.getenv("rewrite.autofix"))) {
                 Charset charset = it.getAfter().getCharset() == null ? StandardCharsets.UTF_8 : it.getAfter().getCharset();
