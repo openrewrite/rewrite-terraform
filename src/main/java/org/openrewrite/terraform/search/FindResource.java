@@ -22,6 +22,7 @@ import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Hcl;
+import org.openrewrite.marker.SearchResult;
 import org.openrewrite.terraform.TerraformResource;
 
 import java.time.Duration;
@@ -50,14 +51,14 @@ public class FindResource extends Recipe {
     }
 
     @Override
-    protected HclVisitor<ExecutionContext> getVisitor() {
+    public HclVisitor<ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
             public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {
                 Hcl.Block b = block;
 
                 if (TerraformResource.isResource(b, resourceName)) {
-                    b = b.withMarkers(block.getMarkers().searchResult());
+                    b = SearchResult.found(b);
                 }
 
                 // resources will only ever be found at the top level of a config file

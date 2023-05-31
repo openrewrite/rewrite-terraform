@@ -54,7 +54,7 @@ public class SecureRandom extends Recipe {
     }
 
     @Override
-    protected HclVisitor<ExecutionContext> getVisitor() {
+    public HclVisitor<ExecutionContext> getVisitor() {
         return new HclIsoVisitor<ExecutionContext>() {
             @Override
             public Hcl.Attribute visitAttribute(Hcl.Attribute attribute, ExecutionContext ctx) {

@@ -57,7 +57,7 @@ public class AddConfiguration extends Recipe {
     }
 
     @Override
-    protected HclVisitor<ExecutionContext> getVisitor() {
+    public HclVisitor<ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
             public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {
@@ -65,6 +65,7 @@ public class AddConfiguration extends Recipe {
 
                 if (TerraformResource.isResource(b, resourceName)) {
                     b = b.withTemplate(HclTemplate.builder(getCursor()::getParent, content).build(),
+                            getCursor(),
                             b.getCoordinates().last());
 
                     List<BodyContent> body = b.getBody();
