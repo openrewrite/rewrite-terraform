@@ -64,7 +64,7 @@ public class AddConfiguration extends Recipe {
                 Hcl.Block b = block;
 
                 if (TerraformResource.isResource(b, resourceName)) {
-                    b = b.withTemplate(HclTemplate.builder(getCursor()::getParent, content).build(),
+                    b = HclTemplate.builder(content).build().apply(
                             getCursor(),
                             b.getCoordinates().last());
 
