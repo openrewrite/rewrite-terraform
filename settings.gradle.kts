@@ -8,7 +8,7 @@ pluginManagement {
 rootProject.name = "rewrite-terraform"
 
 plugins {
-    id("com.gradle.enterprise") version "3.11"
+    id("com.gradle.enterprise") version "latest.release"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "latest.release"
 }
 
