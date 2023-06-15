@@ -10,6 +10,8 @@
 
 This project implements a [Rewrite module](https://github.com/openrewrite/rewrite) that performs common tasks when managing Terraform scripts.
 
+Browse [a selection of recipes available through this module in the recipe catalog](https://docs.openrewrite.org/recipes/terraform).
+
 ### Example
 
 For an example of how to run a Terraform recipe offline, see the [example](https://github.com/openrewrite/rewrite-terraform/blob/main/src/test/kotlin/org/openrewrite/terraform/Example.java).
