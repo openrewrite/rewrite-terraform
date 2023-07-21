@@ -20,6 +20,7 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.marker.SearchResult;
@@ -51,7 +52,7 @@ public class FindResource extends Recipe {
     }
 
     @Override
-    public HclVisitor<ExecutionContext> getVisitor() {
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
         return new HclVisitor<ExecutionContext>() {
             @Override
             public Hcl visitBlock(Hcl.Block block, ExecutionContext ctx) {

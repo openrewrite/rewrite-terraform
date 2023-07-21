@@ -20,6 +20,7 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.hcl.HclIsoVisitor;
 import org.openrewrite.hcl.HclVisitor;
 import org.openrewrite.hcl.tree.Hcl;
@@ -54,7 +55,7 @@ public class SecureRandom extends Recipe {
     }
 
     @Override
-    public HclVisitor<ExecutionContext> getVisitor() {
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
         return new HclIsoVisitor<ExecutionContext>() {
             @Override
             public Hcl.Attribute visitAttribute(Hcl.Attribute attribute, ExecutionContext ctx) {
