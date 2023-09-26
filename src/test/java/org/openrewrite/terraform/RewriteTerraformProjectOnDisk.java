@@ -61,7 +61,7 @@ public class RewriteTerraformProjectOnDisk {
         LargeSourceSet sourceFiles = new InMemoryLargeSourceSet(parser.parse(paths, srcDir, ctx).collect(Collectors.toList()));
         recipe.run(sourceFiles, ctx).getChangeset().getAllResults().forEach(it -> {
             System.out.println(it.diff());
-            if("true".equals(System.getenv("rewrite.autofix"))) {
+            if ("true".equals(System.getenv("rewrite.autofix"))) {
                 Charset charset = it.getAfter().getCharset() == null ? StandardCharsets.UTF_8 : it.getAfter().getCharset();
                 try (BufferedWriter sourceFileWriter = Files.newBufferedWriter(it.getAfter().getSourcePath(), charset)) {
                     sourceFileWriter.write(new String(it.getAfter().printAll().getBytes(charset), charset));
