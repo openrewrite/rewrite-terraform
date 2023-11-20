@@ -15,3 +15,7 @@ Browse [a selection of recipes available through this module in the recipe catal
 ### Example
 
 For an example of how to run a Terraform recipe offline, see the [example](https://github.com/openrewrite/rewrite-terraform/blob/main/src/test/kotlin/org/openrewrite/terraform/Example.java).
+
+## Contributing
+
+We appreciate all types of contributions. See the [contributing guide](https://github.com/openrewrite/.github/blob/main/CONTRIBUTING.md) for detailed instructions on how to get started.
