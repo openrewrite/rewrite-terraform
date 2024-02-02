@@ -29,7 +29,7 @@ import org.openrewrite.internal.lang.Nullable;
 import java.time.Duration;
 
 @Value
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class SecureRandom extends Recipe {
     private static final int DEFAULT_MINIMUM = 20;
 

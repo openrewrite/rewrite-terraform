@@ -29,7 +29,7 @@ import org.openrewrite.terraform.TerraformResource;
 import java.time.Duration;
 
 @Value
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class FindResource extends Recipe {
     @Option(displayName = "Resource name",
             description = "A Terraform resource name, without the quotes.",

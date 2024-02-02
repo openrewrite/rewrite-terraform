@@ -30,7 +30,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Value
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class AddConfiguration extends Recipe {
     @Option(displayName = "Resource name",
             description = "A Terraform resource name, without the quotes.",
