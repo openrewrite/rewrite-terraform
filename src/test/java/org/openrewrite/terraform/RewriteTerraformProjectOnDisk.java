@@ -19,12 +19,9 @@ package org.openrewrite.terraform;
 import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.LargeSourceSet;
 import org.openrewrite.Recipe;
-import org.openrewrite.SourceFile;
 import org.openrewrite.config.Environment;
 import org.openrewrite.hcl.HclParser;
-import org.openrewrite.hcl.tree.Hcl;
 import org.openrewrite.internal.InMemoryLargeSourceSet;
-import org.openrewrite.terraform.search.FindResource;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
