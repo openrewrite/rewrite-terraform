@@ -50,7 +50,7 @@ public class RewriteTerraformProjectOnDisk {
           bfa.isRegularFile() && p.getFileName().toString().endsWith(".tf");
 
         List<Path> paths = Files.find(srcDir, 999, predicate)
-          .limit((args.length > 2) ? Long.parseLong(args[2]) : Long.MAX_VALUE)
+          .limit(args.length > 2 ? Long.parseLong(args[2]) : Long.MAX_VALUE)
           .collect(Collectors.toList());
 
         HclParser parser = HclParser.builder().build();
