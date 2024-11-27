@@ -9,4 +9,5 @@ val rewriteVersion = rewriteRecipe.rewriteVersion.get()
 
 dependencies {
     implementation("org.openrewrite:rewrite-hcl:${rewriteVersion}")
+    testImplementation("org.openrewrite:rewrite-test:${rewriteVersion}")
 }
